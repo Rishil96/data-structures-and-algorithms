@@ -47,6 +47,16 @@
 
 <h3 id="1">Binary Search</h3>
 
+- Description
+    - an searching algorithm that searches an element in a sorted array in log(n) Time Complexity.
+- Algorithm
+    1. Create two index variables denoting the start and end index of the array.
+    2. While start index is less than or equal to end index we run while loop.
+    3. Calculate mid index using start and end index.
+    4. If target is at mid index return the mid index.
+    5. If target is greater than element at mid index, check the right subarray in next iteration by moving start index to mid + 1.
+    6. If target is lesser than element at mid index, check the left subarray in next iteration by moving end index to mid - 1.
+    7. If target is not found and start becomes greater than end, then return -1.
 ---
 
 <h3 id="2">Bubble Sort</h3>
