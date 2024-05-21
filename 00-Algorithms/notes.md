@@ -61,6 +61,15 @@
 
 <h3 id="2">Bubble Sort</h3>
 
+- Description
+    - Bubble Sort is a sorting algorithm that sorts an array in n - 1 passes.
+    - In Bubble Sort, in every kth pass the kth largest element is placed in its correct position.
+- Algorithm
+    1. Run outer for loop with iterator index i that goes from 0 to second last index of array.
+    2. Run inner for loop with iterator index j that goes from 0 to n - i - 1 (means the kth last index).
+    3. Now keep comparing jth element with (j+1) element and swap them if jth element is greater than (j + 1) element
+    4. Repeat this step for n - 1 passes and the array will be sorted.
+
 ---
 
 <h3 id="3">Selection Sort</h3>
