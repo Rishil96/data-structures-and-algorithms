@@ -50,12 +50,12 @@
 - Description
     - an searching algorithm that searches an element in a sorted array in log(n) Time Complexity.
 - Algorithm
-    1. Create two index variables denoting the start and end index of the array.
-    2. While start index is less than or equal to end index we run while loop.
-    3. Calculate mid index using start and end index.
-    4. If target is at mid index return the mid index.
-    5. If target is greater than element at mid index, check the right subarray in next iteration by moving start index to mid + 1.
-    6. If target is lesser than element at mid index, check the left subarray in next iteration by moving end index to mid - 1.
+    1. Create two index variables denoting the **start** and **end** index of the array.
+    2. While **start** index is less than or equal to **end** index we run while loop.
+    3. Calculate **mid** index using start and end index.
+    4. If **target** is at **mid** index return the mid index.
+    5. If **target** is greater than element at **mid** index, check the right subarray in next iteration by moving **start** index to **mid + 1**.
+    6. If target is lesser than element at mid index, check the left subarray in next iteration by moving **end** index to **mid - 1**.
     7. If target is not found and start becomes greater than end, then return -1.
 ---
 
@@ -64,11 +64,12 @@
 - Description
     - Bubble Sort is a sorting algorithm that sorts an array in n - 1 passes.
     - In Bubble Sort, in every kth pass the kth largest element is placed in its correct position.
+    - Simply putting, in first pass the largest element will be placed at the last index, then in second pass the second largest element will be placed at the second last index and so on.
 - Algorithm
-    1. Run outer for loop with iterator index i that goes from 0 to second last index of array.
-    2. Run inner for loop with iterator index j that goes from 0 to n - i - 1 (means the kth last index).
-    3. Now keep comparing jth element with (j+1) element and swap them if jth element is greater than (j + 1) element
-    4. Repeat this step for n - 1 passes and the array will be sorted.
+    1. Run outer for loop with iterator index **i** that goes from 0 to second last index of array.
+    2. Run inner for loop with iterator index **j** that goes from **0** to **n - i - 1** (means the kth last index).
+    3. Now keep comparing **jth** element with **(j+1)** element and swap them if **jth** element is greater than **(j + 1)** element
+    4. Repeat this step for **n - 1** passes and the array will be sorted.
 
 ---
 
