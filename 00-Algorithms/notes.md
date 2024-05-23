@@ -75,6 +75,17 @@
 
 <h3 id="3">Selection Sort</h3>
 
+- Description
+    - Selection Sort is an algorithm where we place the smallest kth element to its correct place in kth pass.
+    - Initially we consider 0th position as sorted list and compare rest of the elements with 0th element.
+    - Once we find the smallest element, we swap the smallest with 0th element thus placing the smallest element at 0th position.
+- Algorithm
+    1. Run outer loop determining the latest index of sorted portion of the array. (0 to n - 2).
+    2. Run inner loop starting from outer loop index + 1 and going till last element of array.
+    3. Find the index of the smallest element in the inner loop.
+    4. After completion of inner loop, we will have the smallest index for that pass so swap the elements of smallest index to the outer loop index.
+    5. Repeat this n - 2 times in outer loop.
+
 ---
 
 <h3 id="4">Insertion Sort</h3>
