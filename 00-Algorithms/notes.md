@@ -90,6 +90,18 @@
 
 <h3 id="4">Insertion Sort</h3>
 
+- Description
+    - is a stable sorting algorithm meaning the relative position of equal elements do not change.
+    - In Insertion sort we initially consider 1st element as sorted and as we go on we increasing that number till we reach last element.
+
+- Algorithm
+    1. Run outer loop from 1 to last index of array (i).
+    2. Initialize key = element at i and j = i - 1
+    3. Now inner loop is a while loop that checks if element at j is greater than key, if yes then we insert the element at j to position j + 1 i.e. arr[j+1] = arr[j] and decrement j.
+    4. This inner loop runs till either j >= 0 and the above condition is true.
+    5. Once inner loop is done running, we simply insert the key at j + 1 position i.e. arr[j + 1] = key.
+    6. The array will be sorted once outer loop finishes execution. So simply speaking we push element at j to postion j + 1 till element at j is greater than key.
+
 ---
 
 <h3 id="5">Merge Sort</h3>
