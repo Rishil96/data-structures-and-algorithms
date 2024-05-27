@@ -106,9 +106,22 @@
 
 <h3 id="5">Merge Sort</h3>
 
+- Description
+    - is a divide and conquer algorithm that uses recursion to split the array into 2 and merge them back in sorted order later.
+    - consists of 2 functions:-
+        1. mergeSort() that uses start and end indexes of the array and splits it into two using mid index.
+        2. merge() that merges the left and right sub arrays back to one.
+
+- Algorithm
+    1. Call the mergeSort function which will recursively call itself and split the arrays in 2.
+    2. This splitting will keep on till there are only 1 element left on each left and right subarrays for that recurisive call.
+    3. Now merge function will be called after mergeSort to merge the left and right subarrays in sorted form using the Merge 2 sorted arrays algorithm.
+    - Can be understood better in code.
+
 ---
 
 <h3 id="6">Quick Sort</h3>
+
 
 ---
 
