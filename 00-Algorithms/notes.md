@@ -122,6 +122,17 @@
 
 <h3 id="6">Quick Sort</h3>
 
+- Description
+    - also a divide and conquer algorithm.
+    - here we choose a pivot element and place it to its correct position and let recursion place the elements in sorted order for left and right subarray.
+
+- Algorithm
+    1. Base case will be returned if start is greater than or equal to end meaning 1 or no element in array.
+    2. Firstly, get the pivot element by choosing any one element from the array (could be first, last, random any element).
+    3. Now place the pivot element to its correct position by any logic (e.g. count the elements smaller than pivot and place it to the next index).
+    4. After placing the pivot to its correct position, move all the elements smaller than pivot to its left side and elements larger than pivot to its right side.
+    5. Return the pivot index after performing the above steps.
+    6. Now call quick sort recursively for left subarray of pivot and right subarray of pivot.
 
 ---
 
