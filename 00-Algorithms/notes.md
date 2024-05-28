@@ -145,6 +145,10 @@
 
 <h3 id="8">Floyd's Cycle Detection</h3>
 
+- Floyd's Cycle Detection is an algorithm to detect a cycle in Linked LIst.
+- Use 2 pointers slow and fast, slow pointer moves once and fast pointers move twice in each iteration.
+- If slow and fast pointer meet, it means a cycle is present and if fast pointer reaches end of List, it means no cycle is present.
+
 ---
 
 <h3 id="9">Stack</h3>
