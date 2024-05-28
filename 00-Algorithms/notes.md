@@ -138,6 +138,9 @@
 
 <h3 id="7">Linked List</h3>
 
+- Linked List is a linear data structure that stores the data as nodes where each node carries data and the address to the next node.
+- The common functionalities of Linked List are :- insert, delete, size, search, reverse.
+
 ---
 
 <h3 id="8">Floyd's Cycle Detection</h3>
