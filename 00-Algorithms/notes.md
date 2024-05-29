@@ -153,6 +153,10 @@
 
 <h3 id="9">Stack</h3>
 
+- Stack is a data structure that stores data in Last In First Out (LIFO) approach.
+- only the top element can be accessed in the Stack.
+- common functions of stack are push, pop, peek/top, size and is empty.
+
 ---
 
 <h3 id="10">N Stacks in an array</h3>
