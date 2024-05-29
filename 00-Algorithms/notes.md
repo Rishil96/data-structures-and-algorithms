@@ -161,6 +161,31 @@
 
 <h3 id="10">N Stacks in an array</h3>
 
+- Given an array implement N Stacks in an array.
+- N => Number of stacks.
+- S => Size of array.
+- Requirements:-
+- **Top array** => an array that stores top element of each stack. Size of top array is N. Initialize with -1 denoting empty stacks.
+- **Next array** => 
+    - points to next element after top element.
+    - points to the next free space.
+- this is for each index. It is an array of size S.
+- Initialize with next freespot, for 0 next freespot is 1, for 1 it is 2 and so on with last index has no next free space so -1.
+- **freeSpot** => shows the current free spot in array.
+
+- **Push Element**
+    1. Find index i.e. a free spot.
+    2. Update free spot to the next one using next array.
+    3. Insert element in main array.
+    4. Update next array but getting the previous top element of ith stack using top array.
+    5. Update top array to index of top element in main array.
+
+- **Pop Element**
+    1. Get index of top element which is going to be popped.
+    2. Update top array with the current next element index.
+    3. Remove element from main array.
+    4. Update next array with freeSpot.
+    5. Update freeSpot with index from where the element was popped.
 ---
 
 <h3 id="11">Queue</h3>
