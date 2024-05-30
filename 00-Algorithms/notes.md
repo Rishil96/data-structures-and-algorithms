@@ -190,6 +190,9 @@
 
 <h3 id="11">Queue</h3>
 
+- Queue is a data structure that stores data in FIFO (First In First Out) manner.
+- Two pointers front and rear are used, new items are added from rear and deleted from front.
+
 ---
 
 <h3 id="12">K Queues in an array</h3>
