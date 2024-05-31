@@ -197,6 +197,30 @@
 
 <h3 id="12">K Queues in an array</h3>
 
+- Given an array of size n, implement k queues in this array.
+- Requirements:-
+    - **front array** => size k that shows front index of kth queue.
+    - **rear array** => size k that stores rear index of kth queue.
+    - **next array** => size n stores indexes of next item for all items in array.
+    - **freeSpot** => current available free spot in main array.
+
+- **Push Algorithm**
+    1. Check overflow (freespot = -1 is overflow)
+    2. Find first free index.
+    3. Update free spot.
+    4. If first element of ith queue i.e. front of kth queue is -1 then update front of kth queue to new index.
+    5. If not first element, then link the previous rear element of kth queue with this new element which will become the new rear.
+    6. Update next of index to -1.
+    7. Update rear to new element index.
+    8. Insert element in main array.
+
+- **Pop Algorithm**
+    1. Check Underflow (front[kth queue] is -1)
+    2. Find index to pop which is front of kth queue.
+    3. Update front to its next element using next of index.
+    4. Manage freespot variable by updating next of index to freespot as that index will be free after front is popped.
+    5. Set free spot to current index from which element was popped.
+    
 ---
 
 <h3 id="13">Build Generic Binary Tree</h3>
