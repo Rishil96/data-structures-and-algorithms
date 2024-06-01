@@ -224,23 +224,25 @@
 ---
 
 <h3 id="13">Build Generic Binary Tree</h3>
+    - A binary tree is a non-linear data structure that stores data in the form of nodes as parents and children.
+    - Each node can have 0, 1 or 2 children that is connected to them using pointers left and right.
 
 ---
 
 <h3 id="14">Inorder Traversal</h3>
-
+    - a way to traverse a Binary Tree where we traverse the left subtree first, followed by node and then followed by right subtree.
 ---
 
 <h3 id="15">Preorder Traversal</h3>
-
+    - a way to traverse a Binary Tree where we traverse the node first, followed by left subtree and then followed by right subtree.
 ---
 
 <h3 id="16">Postorder Traversal</h3>
-
+    - a way to traverse a Binary Tree where we traverse the left subtree first, followed by right subtree and then followed by the node.
 ---
 
 <h3 id="17">Levelorder Traversal</h3>
-
+    - a way to traverse a Binary Tree where we traverse the tree from root to the leaf nodes as levels/depth.
 ---
 
 <h3 id="18">Morris Traversal</h3>
