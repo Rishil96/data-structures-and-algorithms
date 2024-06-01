@@ -224,28 +224,49 @@
 ---
 
 <h3 id="13">Build Generic Binary Tree</h3>
-    - A binary tree is a non-linear data structure that stores data in the form of nodes as parents and children.
-    - Each node can have 0, 1 or 2 children that is connected to them using pointers left and right.
+
+- A binary tree is a non-linear data structure that stores data in the form of nodes as parents and children.
+- Each node can have 0, 1 or 2 children that is connected to them using pointers left and right.
 
 ---
 
 <h3 id="14">Inorder Traversal</h3>
-    - a way to traverse a Binary Tree where we traverse the left subtree first, followed by node and then followed by right subtree.
+
+- a way to traverse a Binary Tree where we traverse the left subtree first, followed by node and then followed by right subtree.
+
 ---
 
 <h3 id="15">Preorder Traversal</h3>
-    - a way to traverse a Binary Tree where we traverse the node first, followed by left subtree and then followed by right subtree.
+
+- a way to traverse a Binary Tree where we traverse the node first, followed by left subtree and then followed by right subtree.
+
 ---
 
 <h3 id="16">Postorder Traversal</h3>
-    - a way to traverse a Binary Tree where we traverse the left subtree first, followed by right subtree and then followed by the node.
+
+- a way to traverse a Binary Tree where we traverse the left subtree first, followed by right subtree and then followed by the node.
+
 ---
 
 <h3 id="17">Levelorder Traversal</h3>
-    - a way to traverse a Binary Tree where we traverse the tree from root to the leaf nodes as levels/depth.
+
+- a way to traverse a Binary Tree where we traverse the tree from root to the leaf nodes as levels/depth.
+
 ---
 
 <h3 id="18">Morris Traversal</h3>
+   
+- this traversal is basically inorder traversal but here we do it in O(1) Space Complexity but not using Recursion.
+- **Algorithm**
+1. Create variable curr set to root to use in traversal.
+2. Start while loop using curr and it will run till curr is a valid node and not NULL.
+3. IF 
+    - curr has no left node, visit the curr node and go right.
+4. ELSE
+    - Find Inorder Predecessor of curr node (go left once then keep going right till we find NULL or we find curr node).
+    - IF right of predecessor is NULL, then make connection from predecessor to curr node using right pointer (pred -> right = curr) and then move curr to its left.
+    - ELSE it means predecessor is pointing to the current node means it has been visited once. First remove connection of pred with curr node (pred -> right = NULL). Then visit the curr node and move curr to its right.
+    - PTR : while getting the predecessor of any node, it is possible to get stuck in infinite loop as we are pointing the predecessor to that node to return back, so we also have to check if the predecessor node is pointing to the current node and break loop if it is.
 
 ---
 
