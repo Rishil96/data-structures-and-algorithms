@@ -272,9 +272,25 @@
 
 <h3 id="19">Binary Search Tree</h3>
 
+- this data structure is the same as Binary Tree but with one condition.
+- The elements smaller than the root will be placed to its left and the elements larger than the root will be placed to its right. 
+- This condition is followed for every node in the tree.
+
 ---
 
 <h3 id="20">Delete a node from BST</h3>
+
+- Deleting a node can be done recursively.
+- If root is empty return NULL.
+- Use recursion to traverse left / right if the key is smaller or larger than the current root.
+- When the key is equal to the current node, we start our deletion process.
+- There are 4 possible cases:-
+    1. Leaf Node: if the node to delete is a leaf node, delete the node and return NULL.
+    2. Only left tree: if the node to delete has only left subtree, save the left subtree in a variable, delete the current node and return the left subtree.
+    3. Only right tree: if the node to delete has only right subtree, save the right subtree in a variable, delete the current node and return the right subtree.
+    4. Both trees: if the node to delete has both sub trees, first get the inorder predecessor of the node to delete. Copy the value of the predecessor to the current node that we want to delete, then call the delete node function to go and delete the predecessor. 
+    - This way we simply replace the node to delete with predecessor node and then delete the predecessor.
+- Finally return the root node.
 
 ---
 
