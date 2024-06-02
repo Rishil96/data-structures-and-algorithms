@@ -296,14 +296,63 @@
 
 <h3 id="21">Heap</h3>
 
+- Heap is a Data Structure that exists in a Complete Binary Tree form and holds a heap property.
+
+- Created as an array but visualized as a tree.
+
+- Complete BT: all levels are completely filled except last one. Node filling happens from left to right.
+
+- Heap Property:
+    - Max property: parent is greater than both of its child. called as MaxHeap.
+    - Min property: parent is lesser than both of its child. called as MinHeap.
+
+- Indexes (Parent to Child):
+    - Starting index is 1 of array
+    - Parent: i
+    - LeftChild: 2i
+    - RightChild: 2i+1
+
+- Starting index is 0 of array
+    - Parent: i
+    - LeftChild: 2i+1
+    - RightChild: 2i+2
+
+- Child to Parent:
+    - Of any child i/2 will be its parent index.
+
+- Insertion:-
+    1. Add node to the end of array
+    2. Place it to the correct place as per Heap Property and Complete Binary Tree property.
+    Compare with parent using index and replace as per Heap Property.
+    - TC: O(logn)
+
+- Deletion:-
+
+    - Only the root node is allowed to be deleted in a heap.
+    1. Replace last value with root and delete last node.
+    2. Place root to its correct position.
+
 ---
 
 <h3 id="22">Heapify an array</h3>
+
+- heapify is a function that places the element at index to its correct position in terms of Heap.
+- Algorithm:-
+    - Input :- array, n (last index of array), i (index of element to heapify)
+    1. i is considered as parent, get left and right child indexes.
+    2. Use variable largest and store the largest element index among the children in this variable.
+    3. If largest is not equal to the initial index of the element, then swap the index with the largest child and call heapify on the child where we swapped.
 
 ---
 
 <h3 id="23">Heap Sort</h3>
 
+- Sort an array that follows the heap rule.
+- Algorithm:-
+    1. Save last index of array in variable index.
+    2. Run while loop on index till index is greater than 1.
+    3. Swap first element with the last element as first element is the largest in max heap.
+    4. Reduce the array size by 1 as we already sorted the last element and call heapify on first element to place the largest element back on 1st position.
 ---
 
 <h3 id="24">Trie</h3>
