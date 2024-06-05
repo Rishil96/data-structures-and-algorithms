@@ -357,6 +357,12 @@
 
 <h3 id="24">Trie</h3>
 
+- is a tree like data structure also known as prefix tree.
+- used to efficiently store string type data.
+- a known usecase is searching in browsers.
+- each node contains a single character as data and has multiple children pointers which points to the next character in the stored string.
+- 3 functions are : insert, delete and search.
+
 ---
 
 <h3 id="25">Graph</h3>
