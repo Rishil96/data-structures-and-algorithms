@@ -367,6 +367,19 @@
 
 <h3 id="25">Graph</h3>
 
+- a graph is a data structure that stores in the form of nodes and each nodes may be linked to another node through edges.
+- e.g. social media where each account can act as a node and their friends list will be edges.
+
+- Breadth First Search
+    1. Create a queue to hold the nodes that are not visited and insert the source node in the queue and mark it as visited.
+    2. Run while loop till queue has atleast one node.
+    3. In the while loop, pop the front node from the queue, and visit the node.
+    4. Go through the neighbours of the front node and add them to the queue if they are not already visited and mark them as visited.
+
+- Depth First Search
+    1. Visit the source node and mark it as visited.
+    2. For all the neighbour nodes of source, if they are not visited, mark them as visited and call dfs recursively for the neighbour nodes which will be the new source.
+
 ---
 
 <h3 id="26">Undirected Graph Cycle Detection BFS</h3>
