@@ -384,9 +384,31 @@
 
 <h3 id="26">Undirected Graph Cycle Detection BFS</h3>
 
+- **Algorithm**
+
+    1. Cycle Detection using BFS for Undirected Graph will accept 3 inputs: source node, visited map (stores if current node is visited) and parent map (stores the parent node of current node).
+    2. Initialize queue and add the source node in the queue, mark source node as visited and mark parent of source node as -1 (dummy value as source is root and doesn't have parent).
+    3. Run while loop till we find a cycle or till there are nodes left in queue to be visited.
+    4. Inside while loop, pop out the front node from queue.
+    5. Loop through the neighbours of the front node.
+
+        - **IF** current neighbour in loop is not visited, mark it visited, set parent of current neighbour to front node and add neighbour in queue.
+        - **ELSE** check if parent of front node is the current neighbour, if it is the case then we are fine but if current neighbour is not the parent of front node, it means neighbour was already visited before by some another node, this tells us that cycle is present, return true.
+    6. Once the queue has no nodes left, return false as we visited all nodes but couldn't find any cycle.
 ---
 
 <h3 id="27">Undirected Graph Cycle Detection DFS</h3>
+
+- **Algorithm**
+
+    1. Cycle Detection using DFS for undirected graph will accept 3 inputs: source node, visited map and parent node of source.
+    2. Visited the source node by marking true in visited map.
+    3. Loop through the neighbours of current source node.
+
+        - **IF** current neighbour is not visited, mark it as visited and call function recursively for current neighbour and send parent as source node for current neighbour.
+        - **ELSE** current neighbour is already visited, if the current neighbour is not the parent of current source node, it means cycle is present as current neighbour was already visited before by some other parent. return true.
+
+    4. Once all recursive functions are called, return false as no cycle found.
 
 ---
 
