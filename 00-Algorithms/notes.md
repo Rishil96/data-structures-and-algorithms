@@ -30,8 +30,8 @@
 | 26 | [Undirected Graph Cycle Detection BFS](#26) |
 | 27 | [Undirected Graph Cycle Detection DFS](#27) |
 | 28 | [Directed Graph Cycle Detection DFS](#28) |
-| 29 | [Topological Sort BFS](#29) |
-| 30 | [Topological Sort DFS](#30) |
+| 29 | [Topological Sort DFS](#29) |
+| 30 | [Topological Sort BFS](#30) |
 | 31 | [Shortest Path using BFS](#31) |
 | 32 | [Shortest Path using DFS](#32) |
 | 33 | [Dijkstra's Algorithm](#33) |
@@ -435,11 +435,30 @@
 
 ---
 
-<h3 id="29">Topological Sort BFS</h3>
+<h3 id="29">Topological Sort DFS</h3>
+
+- Topological Sort is a way of sorting graph nodes in a way such that the most independent node will come first.
+
+- **Algorithm**
+
+    1. Visit the source node.
+    2. Visit all the neighbours of the source node.
+    3. After all the neighbour nodes are visited, add the source node in Stack.
+    4. This will store the sorted nodes in reverse order in stack for all nodes.
 
 ---
 
-<h3 id="30">Topological Sort DFS</h3>
+<h3 id="30">Topological Sort BFS</h3>
+
+- **Algorithm**
+
+    1. Create indegree map, which contains how many nodes are directed towards current node. *E.g. Suppose there are no nodes directed to A, it means A is independent node and it can be added first in our topological sorted ans.*
+    2. Add all nodes with 0 indegree in a queue.
+    3. Run BFS Logic, means while loop till queue is not empty.
+    4. Pop out front node from queue, nodes in queue are independent so we add them in our answer.
+    5. Traverse to all the neighbours of front node and decrement their indegree by 1 as we traversed the front node so that dependency can be removed.
+    6. While decrementing indegrees of neighbours, if a neighbour's indegree becomes 0, add it to the queue or else ignore it.
+    7. This will run till all nodes are traversed by removing their dependencies.
 
 ---
 
