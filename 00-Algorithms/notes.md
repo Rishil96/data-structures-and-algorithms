@@ -414,8 +414,24 @@
 
 <h3 id="28">Directed Graph Cycle Detection DFS</h3>
 
----
+- Cycle Detection in DFS for Directed Graph is different from undirected graph.
+- For 3 nodes A, B, C, undirected graph will form cycle no matter what if all three are connected as edge is bidirectional.
+- But for directed graph, suppose A -> B and A -> C and B -> C, although all nodes are connected, it is unidirectional, as we can't come back to A from C so its not a valid cycle.
+- To beat this, we use Recursive Call Stack.
+- When we call DFS on a node, we basically go downwards till we find the end node similar to going down from root to leaf of a tree.
+- Suppose A is the root and we go down to B, C and we again reached A while we had called DFS from A, it means we reached A again through a cycle.
+- So in code, we will keep track of recursive calls and mark it false when we exit from the Recursive call for a specific node.
 
+- **Algorithm**
+
+    1. Function accepts 3 inputs, source node, visited map and dfsVisited map (track recursive calls in this)
+    2. First we visit the source node by marking it as visited.
+    3. Then we loop through all the neighbours of source node.
+    4. For each neighbour, if it is not visited, we mark it visited in both visited and dfsVisited maps.
+    5. Then we call dfs on that neighbour node and save it in variable.
+    6. If the recursion ans of dfs is true it means cycle was found and we return true else we mark dfsVisited as false for current neighbour as we came out of dfs calls for it.
+    7. If the neighbour was already visited, we check dfsVisited and if it is also true in dfsVisited, we return true as cycle is present when a node is present in both visited and dfsVisited.
+    8. At the end we simply return false if cycle was not found.
 
 ---
 
