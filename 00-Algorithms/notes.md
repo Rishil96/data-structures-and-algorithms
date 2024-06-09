@@ -464,9 +464,30 @@
 
 <h3 id="31">Shortest Path using BFS</h3>
 
+- Shortest Path in BFS for non-weighted graph can be found out easily. From the path where we reach the destination node first, that path itself is the shortest path.
+
+- **Algorithm**
+
+    1. Initialize variables: path (storing shortest path), q (BFS Traversal), vis (keep track of visited nodes) & parent (to store parent of visiting node which later will be used to backtrack and get the path)
+    2. Add source node in queue, mark parent as -1 and mark it visited.
+    3. Start BFS till we find the destination node first.
+    4. While BFS traversal mark every non-visited node as visited and set their parents correctly.
+    5. Once we reach the destination node for the first time, we break out due to the rule we stated in explanation.
+
 ---
 
 <h3 id="32">Shortest Path using DFS</h3>
+
+- In DFS, we find the shortest path for weighted graph.
+- We use topological sort to find the shortest distance from all nodes to the destination node.
+
+- **Algorithm**
+    1. Initialize distance vector of size n where n is no. of nodes.
+    2. Use top element of stack we get from topological sort as source and set its distance as 0.
+    3. Set distance of all neighbours of source node with respect to the source node in distance array.
+    4. Run while loop to do the same for all nodes left in topological ordering.
+    5. For all nodes, set the distance from current node to neighbour node but only if the distance in distance array is greater than the current distance we found.
+    6. Once while loop is run to completion, we get the distance array and we will get the shortest distance from source to destination.
 
 ---
 
