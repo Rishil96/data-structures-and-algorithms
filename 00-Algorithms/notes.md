@@ -493,6 +493,30 @@
 
 <h3 id="33">Dijkstra's Algorithm</h3>
 
+- called as Single Source Shortest Path algorithm.
+- where there is one source node and we calculate the minimum distance from that source node to all other nodes.
+- It uses greedy approach to find the minimum distance from source to all other nodes.
+
+- **Algorithm**
+
+    1. Create a distance array of size n (n => no. of nodes in graph) and set that holds a pair of {distance, node}. Here set will automatically sort based on first element of pair that is distance so when we access the top of set, we get the node with smallest distance.
+
+    2. Add the source node's distance in dist array as 0 and add the distance, source node pair in set.
+
+    3. Run the algorithm till set has atleast one node in it (while loop).
+
+    4. Inside while loop, pop out the top node from set.
+
+    5. Loop through all of its neighbours and check if distance of neighbour from top node is less than the dist to get to that neighbour node mentioned in distance array.
+
+    6. If yes, then find the {old distance, neighbour} pair in set and delete it.
+
+    7. Update the distance array with new minimum distance for neighbour node.
+
+    8. And finally add the new distance, neighbour pair in set.
+
+    9. Once the while loop runs to completion, we will have all the min distances from source to each node.
+
 ---
 
 <h3 id="34">Bellman-Ford Algorithm</h3>
