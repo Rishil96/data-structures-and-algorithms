@@ -521,6 +521,19 @@
 
 <h3 id="34">Bellman-Ford Algorithm</h3>
 
+- also a Single Source Shortest Path algorithm.
+- unlike Dijsktra's it works even when -ve cycles are present in the graph.
+- we can use this algorithm to detect -ve cycles.
+
+- **Algorithm**
+
+    1. Initialize distance array and set source distance as 0.
+    2. Run a for loop n - 1 times (n => no. of nodes in graph). This is the relaxation step.
+    3. Inside for loop we loop through the adjacency list and go through all the nodes, neighbours and their distances.
+    4. Calculate the distance of u + weight of v and check if it is lesser than what is mentioned in distance array and if yes then update the distance array.
+    5. Above step is the relaxation and once we run it n - 1 times we will have the min distances of source node to each other node.
+    6. Run the relaxation step once more and see if any distance gets updated, if yes it means cycle is present.
+
 ---
 
 <h3 id="35">Floyd-Warshall Algorithm</h3>
