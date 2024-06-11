@@ -538,6 +538,17 @@
 
 <h3 id="35">Floyd-Warshall Algorithm</h3>
 
+- multiple source shortest path algorithm.
+- Here, we try to find the shortest path from each node to every other node.
+
+- **Algorithm**
+
+    1. Create a 2D array of size n X n so we can keep track of distance of each node to every other node.
+    2. Add the distance of source itself as 0 for 0 to n-1 source nodes.
+    3. Initially, add all the distance available in adjacency list to the distance array.
+    4. Use a helper node to try and reach from source to destination by getting distance from distance array. If we find a shorter route, then add the distance to distance array.
+    5. This will be done using triple for loop, outer will be helper node, middle for loop will be source and inner will be destination.
+
 ---
 
 <h3 id="36">KosaRaju Algorithm</h3>
