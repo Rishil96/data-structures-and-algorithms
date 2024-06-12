@@ -572,6 +572,19 @@
 
 <h3 id="37">Tarjans Algorithm</h3>
 
+- Bridge in a graph: is referred to the edge where if we remove that edge, the number of components of the graph will increase.
+- Unintuitive but optimized approach.
+- For every node, we maintain 2 time : tin (time of insertion i.e. the time at which we reached current node) and low (lowest time to reach this node).
+
+- **Algorithm**
+
+    1. Initialize variables : timer (0), tin array (time where node was reached first time), low (lowest time required to reach current node).
+    2. Algorithm takes source, parent as inputs along with the above variables.
+    3. First step is to visit the node and update tin and low timers for the current node.
+    4. Loop through the neighbours of current source and continue if neighbour is the source's parent.
+    5. If the neighbour is not visited, visit it. After we return from the visiting function, update the low value for source node and check if the edge between source and nbr is a bridge. Store if edge is bridge.
+    6. Else if the neighbours is already visited, just update the low timer for source if it is less from nbr to source.
+
 ---
 
 <h3 id="38">Prims Algorithm</h3>
