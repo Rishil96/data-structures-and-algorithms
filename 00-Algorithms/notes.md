@@ -553,6 +553,21 @@
 
 <h3 id="36">KosaRaju Algorithm</h3>
 
+- this algorithm is used to find the count and print strongly connected components in a graph.
+- SCC (Strongly Connected Components) : is a group of nodes such that all nodes in that group can reach every other node directly or indirectly.
+
+- **Algorithm**
+
+    1. Initialize variables :- stack to hold topological sort of graph, visited map and reversed adjacency list map to hold the adjacency list in reverse direction.
+
+    2. Get the topological sorting of the graph.
+
+    3. Get the reversed adjacency list of the graph.
+
+    4. While we have nodes in topological sort stack, we run loop and call dfs on each unvisited node. 
+
+    5. The number of times dfs had to be called denotes the number of SCC in the graph.
+
 ---
 
 <h3 id="37">Tarjans Algorithm</h3>
