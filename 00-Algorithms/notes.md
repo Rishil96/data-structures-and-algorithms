@@ -616,4 +616,27 @@
 
 <h3 id="39">Kruskals Algorithm</h3>
 
+- This algorithm is also used to find the minimum spanning tree.
+- Basic idea of Kruskal's algorithm is we consider each node as a separate disjoint component and then in the algorithm we connect them to build a MST.
+- **Disjoint Set**: used to find if 2 nodes are in same component or not.
+    - Disjoint set has 2 operations:-
+    - Find Parent
+    - Union 
+- Requirements:-
+    - parent array of size n. (init every node is a parent of itself)
+    - rank array of size n to store ranks of components. (init every node with rank 0)
+    - Linear DS that stores edge information (u -> v, wt), Kruskals algorithm doesn't need adjacency matrix/list. This DS needs to be sorted by weights.
+
+- **Algorithm**
+
+    1. Initialize parent array and rank array and ans variable to store edge sum of MST.
+    2. Update parent array to make every node parent of itself.
+    3. Build the linear data structure that stores edge info and sort it by weight of edge.
+    4. Write 2 helper functions, one to find parent of a node and second to union 2 disjoint components.
+    5. Start the algorithm by looping through the edge DS.
+    6. Store u, v and w in variables and find the parent of u and v nodes.
+    7. If both have same parents it means both are part of same component.
+    8. Else run Union on both nodes to combine them and add the weight to answer variable.
+    7. This loop will run on all edges and finally we will get the Minimum spanning tree.
+
 ---
