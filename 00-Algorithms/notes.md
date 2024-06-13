@@ -589,6 +589,29 @@
 
 <h3 id="38">Prims Algorithm</h3>
 
+- This algorithm is used to find Minimum Spanning Tree (MST).
+- Spanning Tree :-
+    - convert graph into a tree with no cycles.
+    - In tree, every node should be reachable by every other node.
+    - tree would have N nodes and N - 1 edges.
+- Minimum Spanning Tree :- follows all the above rules of Spanning Tree and the total sum of weights of all edges is minimum.
+
+- Prims algorithm will build the tree from scratch.
+- Requirements:-
+    - key array : contains value of each node. (init 0 at 0th index and rest all index is infinite).
+    - mst array : tracks which node has been included in MST as of now. (int false for all nodes)
+    - parent array : stores final structure of MST. (init -1 on all indexes)
+
+- **Algorithm**
+
+    1. Find minimum value node from key (will find 0 for first as we set 0th node value as 0).
+    2. Add the minimum value node (u) to the MST by setting mst[minimum value node] = true.
+    3. Loop through all adjacent nodes of u and let it be v.
+        - For every v it will have weight wt.
+        - IF node v is not added in mst i.e. mst[v] == false and weight is less than key of v node i.e. wt < key[v] , we will update key[v] = wt and parent of v as u i.e. parent[v] = u
+    4. Now, go back to step 1 and find minimum value node again but that should not be a part of MST already.
+    5. Stopping condition for algorithm is when all nodes are added in MST.
+
 ---
 
 <h3 id="39">Kruskals Algorithm</h3>
