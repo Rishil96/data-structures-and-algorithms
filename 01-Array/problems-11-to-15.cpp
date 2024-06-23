@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 // 11. Index of First repeating element in an array
@@ -153,6 +154,38 @@ vector<int> spiralOrder(vector<vector<int>>& matrix) {
 
 
 // 15. Factorial of a large number
+vector<int> factorial(int N){
+    // Create answer array to store digits of ans and add 1 in it, where 1 is the first number to multiply in factorial range
+    vector<int> fact;
+    fact.push_back(1);
+    int carry = 0;
+    
+    // Loop from 2 to N to multiply each number in the array
+    for (int num=2; num<=N; num++) {
+        // Multiply num to every digit of curr answer, store the new digit after multiplication on the same index and update carry
+        for (int i=0; i<fact.size(); i++) {
+            int currDigit = fact[i];                // Current digit to multiply
+            int ans = num * currDigit + carry;      // Ans of num and current digit product
+            int ansDigit = ans % 10;                // Get ans digit to add in current index
+            carry = ans / 10;                       // Update carry to later on add remaining digits
+            fact[i] = ansDigit;                     // Update ans vector with new digit at current index
+        }
+        // Add carry digits to the end of array
+        while (carry) {
+            fact.push_back(carry % 10);
+            carry /= 10;
+        }
+    }
+    
+    // Add carry digits to the end of array
+    while (carry) {
+        fact.push_back(carry % 10);
+        carry /= 10;
+    }
+    
+    reverse(fact.begin(), fact.end());
+    return fact;
+}
 
 
 int main() {
