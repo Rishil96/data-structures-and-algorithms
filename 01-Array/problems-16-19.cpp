@@ -43,6 +43,62 @@ int pivotIndex(vector<int>& nums) {
     return ans;
 }
 
+
+// 18. Remove duplicates from sorted array
+int removeDuplicates(vector<int>& nums) {
+    // Use index to traverse the array and find duplicates
+    int index = 1;
+
+    while (index < nums.size()) {
+        // Always compare with the previous element, if both are same erase current element
+        if (nums[index] == nums[index - 1]) nums.erase(nums.begin() + index);
+        // Else increment index
+        else index++;
+    }
+
+    // Return size of array with only unique values
+    return nums.size();
+}
+
+
+// 19. Maximum Average Subarray
+double findMaxAverage(vector<int>& nums, int k) {
+    // Variable to store max average
+    double maxAverage = INT_MIN;
+
+    // Create 2 variables that will act as a window of size k
+    int left = 0;
+    int right = left + k - 1;
+
+    // Keep track of the current window sum of size k
+    double windowSum = 0;
+    for (int i=left; i<=right; i++) windowSum += nums[i];
+
+    // Process first window
+    maxAverage = windowSum / k;
+    windowSum -= nums[left];
+    left++;
+    right++;
+
+    while (right < nums.size()) {
+        
+        // Add the new window element in windowSum
+        windowSum += nums[right++];
+
+        // Calculate new average and update and max average
+        double currAverage = windowSum / k;
+        maxAverage = max(maxAverage, currAverage);
+
+        // Remove older window element from windowSum
+        windowSum -= nums[left];
+        left++;
+    }
+
+    // Return max average
+    return maxAverage;
+}
+
+
 int main() {
 
     

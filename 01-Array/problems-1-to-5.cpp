@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 using namespace std;
 
 // 1. Reverse an array
@@ -50,6 +51,7 @@ void sortBinary(vector<int>& arr) {
 
 // 4. Majority Element in an array
 int majorityElement(vector<int>& nums) {
+    // Bayer-Moore Voting Algorithm
     // 1. Use 2 variables, element to store majority element and count to keep the count of current element
     int element = 0;
     int count = 0;
