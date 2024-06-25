@@ -71,12 +71,60 @@ int totalOccurrences(vector<int>& nums, int target) {
     return  ans == 0 ? 0 : ans + 1;
 }
 
+
+// 4. Find the missing number in a sorted array
+int missingNumber(vector<int> &nums) {
+    // Use left and right pointers for Binary Search
+    int left = 0;
+    int right = nums.size() - 1;
+
+    // Binary Search
+    while (left < right) {
+        // Get mid
+        int mid = left + (right - left)/2;
+        // We are on left side of missing element
+        if (nums[mid] == mid + 1) {
+            left = mid + 1;
+        }
+        else {
+            right = mid;
+        }
+    }
+
+    return (nums[right] == right + 1) ? right + 2 : right + 1;
+}
+
+
+// 5. Peak element in a mountain array
+int peakIndexInMountainArray(vector<int>& arr) {
+    // Variables to implement Binary Search
+    int left = 0;
+    int right = arr.size() - 1;
+
+    // Binary Search logic
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        // We are on left of peak
+        if (mid + 1 < arr.size() && arr[mid] <= arr[mid + 1]) {
+            left = mid + 1;
+        }
+        // We are either on the peak element or to the right of peak
+        else right = mid;
+    }
+
+    return right;
+}
+
+
 int main() {
 
     vector<int> nums{1, 2, 3, 4, 5, 5, 5, 6, 6, 7, 7, 8};
     cout << "Total Occurrences 1: " << totalOccurrences(nums, 5) << endl;
-
     cout << "Total Occurrences 2: " << totalOccurrences(nums, 9) << endl;
+
+    vector<int> nums2{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    cout << "Missing Number: " << missingNumber(nums2) << endl;
 
     return 0;
 }
