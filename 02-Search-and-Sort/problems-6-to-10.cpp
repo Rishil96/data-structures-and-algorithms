@@ -118,6 +118,7 @@ int matSearch(vector <vector <int>> &mat, int N, int M, int X)
     int start = 0;
     int end = M - 1;
     
+    // Go through each row vector and see if target falls between the first and last element of that vector row, if yes call binary search on it
     for (auto arr: mat) {
         if (arr[0] <= X && arr.back() >= X) {
             int ans = bs2(arr, start, end, X);
@@ -129,8 +130,35 @@ int matSearch(vector <vector <int>> &mat, int N, int M, int X)
 }
 
 
+// 10. Nearly Sorted Array
+int nearlySortedArray(vector<int> &arr, int target) {
+    int left = 0;
+    int right = arr.size() - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        // Check i-1, i and i+1 position to see if element exists
+        if (mid - 1 >= 0 && arr[mid - 1] == target) return mid - 1;
+        if (arr[mid] == target) return mid;
+        if (mid + 1 < arr.size() && arr[mid + 1] == target) return mid + 1;
+
+        if (arr[mid] > target) right = mid - 1;
+        else left = mid + 1;
+    }
+
+    return -1;
+}
+
 int main() {
 
+    vector<int> arr{2, 1, 3, 5, 4};
+    cout << "Nearly Sorted 1: " << nearlySortedArray(arr, 3) << endl;
+    cout << "Nearly Sorted 2: " << nearlySortedArray(arr, 5) << endl;
+    cout << "Nearly Sorted 3: " << nearlySortedArray(arr, 10) << endl;
+    cout << "Nearly Sorted 4: " << nearlySortedArray(arr, -2) << endl;
+    cout << "Nearly Sorted 5: " << nearlySortedArray(arr, 4) << endl;
+    cout << "Nearly Sorted 6: " << nearlySortedArray(arr, 2) << endl;
     
 
     return 0;
