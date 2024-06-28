@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 
@@ -39,10 +40,46 @@ int singleNonDuplicate(vector<int>& nums) {
 }
 
 
-// 12. 
+// 12. Find K diff pairs
+int findPairs(vector<int>& nums, int k) {
+    // Sort the input array
+    sort(nums.begin(), nums.end());
+
+    // Use 2 pointers to find all pairs
+    int i = 0;
+    int j = 1;
+
+    // Store ans
+    int ans = 0;
+
+    // Run till both i and j are valid indexes of the array
+    while (j < nums.size()) {
+        // Calculate difference
+        int difference = nums[j] - nums[i];
+        // If difference is k, increment ans, i and j
+        if (difference == k) {
+            ans++;
+            i++;
+            j++;
+        }
+        // If difference is greater than k, reduce difference by incrementing i
+        else if (difference > k) i++;
+        // When difference is lesser than k, incread difference by incrementing j
+        else j++;
+
+        // To handle duplicate pairs, after one pair was processed, move i ahead till it is not a duplicate to its previous index i.e. i - 1
+        while (i - 1 >= 0 && i < nums.size() && nums[i-1] == nums[i]) i++;
+
+        // Reset j to i + 1 to again avoid duplicate pairs
+        if (i >= j) j = i + 1;
+    }
+
+    return ans;
+}
 
 
-// 13. 
+// 13. Find k closest elements
+
 
 int main() {
 
