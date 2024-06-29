@@ -79,7 +79,109 @@ int findPairs(vector<int>& nums, int k) {
 
 
 // 13. Find k closest elements
+vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+    int left = 0;
+    int right = arr.size() - 1;
+    
+    // Store index of num closest to x
+    int center = -1;
 
+    // Find upper bound of x
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == x) {
+            center = mid;
+            break;
+        }
+        else if (arr[mid] > x) {
+            center = mid;
+            right = mid;
+        }
+        else {
+            left = mid + 1;
+        }
+    }
+
+    // Update center to right if it was not updated even once       
+    center = (center == -1) ? right : center;
+
+    if (center - 1 >= 0 && abs(arr[center-1]-x) <= abs(arr[center]-x)) {
+        center = center - 1;
+    }
+
+    // Use left and right to set the range of vectors
+    left = center;
+    right = center;
+    vector<int> ans;
+
+    while (--k) {
+        // Both left and right are valid
+        if (left - 1 >= 0 && right + 1< arr.size()) {
+            // Check which num is closer to x
+            if (x - arr[left - 1] <= arr[right + 1] - x) {
+                left--;
+            }
+            else {
+                right++;
+            }
+        }
+        // Only left is valid
+        else if (left - 1 >= 0) {
+            left--;
+        }
+        // Only right is valid
+        else {
+            right++;
+        }
+    }
+    
+    return vector<int>(arr.begin()+left, arr.begin()+right+1);
+}
+
+
+// 14. Exponential Search
+int binarySearch(int arr[], int l, int r, int x) {
+    if (r >= l)
+    {
+        int mid = l + (r - l)/2;
+ 
+        // If the element is present at the middle
+        // itself
+        if (arr[mid] == x)
+            return mid;
+ 
+        // If element is smaller than mid, then it
+        // can only be present n left subarray
+        if (arr[mid] > x)
+            return binarySearch(arr, l, mid-1, x);
+ 
+        // Else the element can only be present
+        // in right subarray
+        return binarySearch(arr, mid+1, r, x);
+    }
+ 
+    // We reach here when element is not present
+    // in array
+    return -1;
+}
+
+int exponentialSearch(int arr[], int n, int x) {
+    // If x is present at first location itself
+    if (arr[0] == x)
+        return 0;
+ 
+    // Find range for binary search by
+    // repeated doubling
+    int i = 1;
+    while (i < n && arr[i] <= x)
+        i = i*2;
+ 
+    //  Call binary search for the found range.
+    return binarySearch(arr, i/2, min(i, n-1), x);
+}
+
+
+// 15.
 
 int main() {
 
