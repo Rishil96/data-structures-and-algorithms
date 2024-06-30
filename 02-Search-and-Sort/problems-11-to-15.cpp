@@ -181,11 +181,75 @@ int exponentialSearch(int arr[], int n, int x) {
 }
 
 
-// 15.
+// 15. Book Allocation Problem
+bool canAllocate(int arr[], int &n, int &students, int &totalPages) {
+    int allocated = 1;
+    int currPages = 0;
+
+    for (int i=0; i<n; i++) {
+        int currBook = arr[i];
+
+        // If curr book has more pages than our total pages limit, return false
+        if (currBook > totalPages) return false;
+
+        // Check if curr Book can be allocated to the current student where curr student has currPages already allocated
+        if (currBook + currPages <= totalPages) {
+            currPages += currBook;
+        }
+        // If curr book cannot be allocated to the current student, then allocate it to the next student
+        else {
+            allocated++;
+            currPages = currBook;
+        }
+        // If all students already got their maximum assigned pages before going through all books, 
+        // it means there are books still pending to be assigned so its an invalid answer
+        if (allocated > students) return false;
+    }
+
+    // Here, we return true even though all students might not have book allocated because we are allocating more pages
+    // to a single student so a valid allocation is definitely possible even though less students were assigned books as per condition.
+    return allocated <= students;
+}
+
+
+long long findPages(int n, int arr[], int m) {
+    // Base Case: If there are more students than books, every student won't have a book
+    if (m > n) return -1;
+
+    long long ans = -1;
+
+    // Set search space for optimal number of pages to be alloted 0 to total pages
+    int left = 0;
+    int right = 0;
+
+    for (int i=0; i<n; i++) right += arr[i];
+
+    // Search for optimal answer
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        // Check if current pages (mid) is a valid allocation, if yes then save ans and try to reduce the pages
+        if (canAllocate(arr, n, m, mid)) {
+            ans = mid;
+            right = mid - 1;
+        }
+        // If cannot be allocated, then increase the pages to find an answer
+        else {
+            left = mid + 1;
+        }
+    }
+
+    return ans;
+}
+
 
 int main() {
 
-    
+    int n = 7;
+    int arr[] = {15, 10, 19, 10, 5, 18, 7};
+    int m = 5;
+
+    cout << "Book Allocation: " << findPages(n, arr, m) << endl;
 
     return 0;
 }
