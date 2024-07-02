@@ -113,9 +113,67 @@ int solve(int n, int k, vector<int> &stalls) {
 }
 
 
+// 18. EKO SPOJ
+bool hasEnoughWood(int &N, int &M, int trees[], int &cutHeight) {
+    
+    int gatheredWood = 0;
+
+    for (int i=0; i<N; i++) {
+        if (trees[i] > cutHeight) gatheredWood += (trees[i] - cutHeight);
+    }
+
+    return gatheredWood >= M;
+}
+
+int ekoSPOJ(int &N, int M, int trees[]) {
+    /*
+        N -> no. of trees
+        M -> required units of wood
+        trees -> heights of trees in an array of size N
+    */
+    
+    int ans = 0;
+
+    // Define search space of wood
+    int low = 0;
+    int high = 0;
+
+    // Lowest height from where the tree can be chopped is 0 and highest height is the height of the tallest tree
+    for (int i=0; i<N; i++) high = max(high, trees[i]);
+
+    // Use Binary Search to get the optimal height from where trees can be cut causing minimal wastage of wood
+    while (low <= high) {
+        int cutHeight = low + (high - low) / 2;
+
+        if (hasEnoughWood(N, M, trees, cutHeight)) {
+            ans = cutHeight;
+            low = cutHeight + 1;
+        }
+        else {
+            high = cutHeight - 1;
+        }
+    }
+
+    return ans;
+}
+
+
+// 19. PRATA SPOJ
+
+
+
 int main() {
 
-    
+    int N = 4;
+    int M = 7;
+    int trees[] = {20, 15, 10, 17};
+
+    cout << "EKO SPOJ 1: " << ekoSPOJ(N, M, trees) << endl;
+    N = 5;
+    M = 20;
+    int trees2[] = {4, 42, 40, 26, 46};
+
+    cout << "EKO SPOJ 2: " << ekoSPOJ(N, M, trees2) << endl;    
 
     return 0;
 }
