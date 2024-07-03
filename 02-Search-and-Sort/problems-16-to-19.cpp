@@ -159,7 +159,72 @@ int ekoSPOJ(int &N, int M, int trees[]) {
 
 
 // 19. PRATA SPOJ
+bool canCookPratas(int &P, int &L, int cookRanks[], int &timeBarrier) {
+    int timeTaken = 0;
+    int cookedPratas = 0;
+    int cookTime;
 
+    for (int i=0; i<L; i++) {
+        int currRank = cookRanks[i];
+        cookTime = currRank;
+        
+        // While current chef can cook pratas and is within time barrier, keep cooking 
+        while (timeTaken + cookTime <= timeBarrier) {
+            cookedPratas++;                             // Cook current prata
+            timeTaken += cookTime;                      // Add time used to cook current prata
+            cookTime += currRank;                       // Update the time required to cook next prata
+            if (cookedPratas >= P) return true;         // Return true if order was complete
+        }
+
+        timeTaken = 0;
+    }
+
+    return false;
+}
+
+int prataSPOJ(int P, int L, int cookRanks[]) {
+    /*
+        P => no. of pratas ordered
+        L => no. of cooks
+        cookRanks => ranks of each cook
+        A cook with rank R can cook first prata in time R, second prata in time 2R, third in 3R, and so on.
+    */
+    
+    // Define a search space for total time taken
+    int minTime = 0;
+    int maxTime = 0;
+
+    // Find the slowest cook
+    for (int i=0; i<L; i++) maxTime = max(maxTime, cookRanks[i]);
+
+    // Make the slowest cook to make all pratas
+    // Use Summation of Sequence Formula : (n/2) * (2a + (n - 1) * d)
+    /*
+        n = no. of items in sequence to be added
+        a = first term in the sequence
+        d = difference between 2 consecutive terms
+    */
+    maxTime = (P/2) * (2 * maxTime + (P - 1) * maxTime);
+    
+    // Use Binary Search to find optimal time in which the pratas can be made
+    int ans = -1;
+
+    while (minTime <= maxTime) {
+        int currTimeTaken = minTime + (maxTime - minTime) / 2;
+
+        // If prata order can be cooked within current time, save it and try to minimize the time
+        if (canCookPratas(P, L, cookRanks, currTimeTaken)) {
+            ans = currTimeTaken;
+            maxTime = currTimeTaken - 1;
+        }
+        // Increase the time if pratas were not cooked with current time
+        else {
+            minTime = currTimeTaken + 1;
+        }
+    }
+
+    return ans;
+}
 
 
 int main() {
@@ -173,7 +238,25 @@ int main() {
     M = 20;
     int trees2[] = {4, 42, 40, 26, 46};
 
-    cout << "EKO SPOJ 2: " << ekoSPOJ(N, M, trees2) << endl;    
+    cout << "EKO SPOJ 2: " << ekoSPOJ(N, M, trees2) << endl;
+
+    int P = 10;
+    int L = 4;
+    int cookRanks[] = {1, 2, 3, 4};
+
+    cout << "PRATA SPOJ 1: " << prataSPOJ(P, L, cookRanks) << endl;
+
+    P = 8;
+    L = 1;
+    int cookRanks2[] = {1};
+
+    cout << "PRATA SPOJ 2: " << prataSPOJ(P, L, cookRanks2) << endl;
+
+    P = 8;
+    L = 8;
+    int cookRanks3[] = {1, 1, 1, 1, 1, 1, 1, 1};
+
+    cout << "PRATA SPOJ 3: " << prataSPOJ(P, L, cookRanks3) << endl;
 
     return 0;
 }
