@@ -111,7 +111,31 @@ string longestCommonPrefix(vector<string>& strs) {
 }
 
 
-// 10.
+// 10. Reverse vowels of a string
+bool isVowel(char ch) {
+    return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U' || ch == 'a' || ch == 'e' || ch == 'i' || ch == 'e' || ch == 'o' || ch == 'u';
+}
+
+string reverseVowels(string s) {
+    // 2 pointer approach to swap vowels
+    int left = 0;
+    int right = s.size() - 1;
+
+    while (left < right) {
+        // Check if left and right characters are both vowels
+        bool isLeft = isVowel(s[left]);
+        bool isRight = isVowel(s[right]);
+
+        // If both are vowels, then swap
+        if (isLeft && isRight) swap(s[left++], s[right--]);
+        // If only left char is vowel, decrement right
+        else if (isLeft) right--;
+        // If only right char is vowel, increment left
+        else left++;
+    }
+
+    return s;
+}
 
 
 
