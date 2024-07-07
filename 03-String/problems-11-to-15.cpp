@@ -1,5 +1,7 @@
 #include <iostream>
 #include <unordered_map>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 // 11. Isomorphic Strings
@@ -83,14 +85,97 @@ string reorganizeString(string s) {
 }
 
 
-// 13.
+// 13. Group Anagrams
+vector<vector<string>> groupAnagrams(vector<string>& strs) {
+    // Store answer
+    vector<vector<string>> ans;
+
+    // Find anagrams and store it in map
+    unordered_map<string, vector<string>> anagrams;
+
+    // All anagrams in sorted form will be equal to each other
+    for (auto s: strs) {
+        string ogString = s;
+        sort(s.begin(), s.end());
+        anagrams[s].push_back(ogString);
+    }
+
+    // Store all grouped anagrams in ans array
+    for (auto item: anagrams) {
+        ans.push_back(item.second);
+    }
+
+    return ans;
+}
 
 
-// 14.
+// 14. Longest Palindromic Substring
+void expand(string& s, int left, int right, string& ans) {
+    // Store longest palindrome formed from current left and right position
+    string temp;
+
+    // Expand left and right till we have valid palindrome or we go beyond valid index of s
+    while (left >= 0 && right < s.size()) {
+        // Store answer if current left and right boundaries make a valid palindrome
+        if (s[left] == s[right]) {
+            temp = s.substr(left, right - left + 1);
+        }
+        else {
+            break;
+        }
+        // Expand on both sides
+        left--;
+        right++;
+    }
+
+    if (temp.size() > ans.size()) ans = temp;
+
+    return ;
+}
+
+string longestPalindrome(string s) {
+    // Store longest palindrome in ans
+    string ans;
+
+    // Loop through s
+    for (int i=0; i<s.size(); i++) {
+        // Expand and find longest palindrome for odd number
+        expand(s, i, i, ans);
+        // Expand and find longest palindrome for even number
+        expand(s, i, i+1, ans);
+    }
+
+    return ans;
+}
 
 
-// 15.
+// 15. Find the index of first occurrence in a string
+int strStr(string haystack, string needle) {
+    int left = 0;
+    int right = needle.size() - 1;
 
+    while (right < haystack.size()) {
+        // Match first character and if matched try all characters
+        if (haystack[left] == needle[0]) {
+            bool found = true;
+            // Check all characters from left to right with needle
+            for (int i=left; i<=right; i++) {
+                if (!(haystack[i] == needle[i-left])) {
+                    found = false;
+                    break;
+                }
+            }
+            // Return left as it is starting index of substring
+            if (found) return left;
+        }
+
+        // Move the window
+        left++;
+        right++;
+    }
+
+    return -1;
+}
 
 
 int main() {
