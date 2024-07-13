@@ -108,10 +108,60 @@ string numberToWords(int num) {
 }
 
 
-// 14. 
+// 14. WildCard Matching
+bool wildMatch(string &s, string &p, int sPtr, int pPtr) {
+    // Base Case 1: Both string and part is consumed
+    if (sPtr >= s.size() && pPtr >= p.size()) return true;
+
+    // Base Case 2: Pattern is consumed but not string
+    if (pPtr >= p.size()) return false;
+
+    // Base Case 3: String is consumed but not pattern
+    if (sPtr >= s.size()) {
+        // Consume * from pattern by matching no characters
+        while (pPtr < p.size() && p[pPtr] == '*') pPtr++;
+        return pPtr >= p.size();
+    }
+
+    // Ek Case
+    // Case 1: Direct match
+    if (s[sPtr] == p[pPtr] || p[pPtr] == '?') return wildMatch(s, p, sPtr+1, pPtr+1);
+    // Case 2: * match
+    else if (p[pPtr] == '*') {
+        // Include Exclude pattern : Consume 1 character and don't consume character
+        return wildMatch(s, p, sPtr+1, pPtr) || wildMatch(s, p, sPtr, pPtr+1);
+    }
+    // Case 3: No match
+    return false;
+}
+
+bool isMatch(string s, string p) {
+    return wildMatch(s, p, 0, 0);
+}
 
 
-// 15.
+// 15. Perfect Squares
+int perfectSquares(int n) {
+    // Base Case
+    if (n == 0) return 0;           // We consumed n with perfect squares
+    if (n < 0) return INT_MAX;      // If n goes below zero it means invalid answer
+
+    // Ek Case
+    int minAns = INT_MAX;
+
+    for (int num=1; num<=sqrt(n); num++) {
+        // Calculate answer by subtracting with square of current number
+        int currAns = perfectSquares(n - (num * num));
+        // If current answer is a valid one, update in answer variable
+        if (currAns != INT_MAX) minAns = min(minAns, 1 + currAns);
+    }
+
+    return minAns;
+}
+
+int numSquares(int n) {
+    return perfectSquares(n);
+}
 
 
 int main() {
