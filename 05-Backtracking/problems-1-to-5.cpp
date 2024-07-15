@@ -124,10 +124,86 @@ vector<string> findPath(vector<vector<int>> &m, int n) {
 }
 
 
-// 3.
+// 3. N-Queens
+bool canPlaceQueen(int &n, vector<string>& board, int row, int col) {
+    /*
+        Since we are placing queens from row 0 to n - 1, we always have to check we queens
+        were placed in above rows such that a queen from current cell can capture it
+        3 things to check :-
+            1. is current column above current cell
+            2. upper left diagonal
+            3. upper right diagonal
+    */
+    
+    // Check if queen exists in current column
+    for (int r=0; r<row; r++) if (board[r][col] == 'Q') return false;
+
+    // Check if queen exists in left upper diagonal
+    int i = row;
+    int j = col;
+
+    while (i >= 0 && j >= 0) {
+        if (board[i][j] == 'Q') return false;
+        i--;
+        j--;
+    }
+    
+    // Check if queen exists in right upper diagonal
+    i = row;
+    j = col;
+
+    while (i >= 0 && j < n) {
+        if (board[i][j] == 'Q') return false;
+        i--;
+        j++;
+    }
+
+    return true;
+}
+
+void nQueenHelper(int &n, vector<vector<string>>& ans, vector<string>& board, int currRow) {
+    /*
+        In every helper call, we will try to place a queen in current row of the board
+        If we are able to place a queen in current row, we call recursion to do the same
+        for the next row, and if not we simple come back from that call
+        If the Recursive call reaches the last row, it means N queens were placed successully
+        so we save that instance of the board in our main answer variable
+    */
+
+    // Base Case: If currRow reached N, means all queens are placed, store answer
+    if (currRow >= n) {
+        ans.push_back(board);
+        return ;
+    }
+
+    // Ek Case: Try to place queens in columns 1 to N - 1 of currRow
+    for (int col=0; col<n; col++) {
+        // If its possible to place queen on current cell, place it and call recursion for next row
+        if (canPlaceQueen(n, board, currRow, col)) {
+            board[currRow][col] = 'Q';
+            nQueenHelper(n, ans, board, currRow + 1);
+            board[currRow][col] = '.';          // Backtracking step
+        }
+    }
+
+    return ;
+}
+
+vector<vector<string>> solveNQueens(int n) {
+    vector<vector<string>> ans;                             // Answer storing vector
+    vector<string> board(n);                                // Single board instance
+    string singleRow;                                       // Single row instance with no queens
+    for (int i=0; i<n; i++) singleRow.push_back('.');       // Build single row
+    for (int row=0; row<n; row++) board[row] = singleRow;   // Add single rows in board
+
+    // Use recursion to place N Queens in N rows of the empty board
+    nQueenHelper(n, ans, board, 0);
+
+    return ans;
+}
 
 
-// 4.
+// 4. 
 
 
 // 5.
