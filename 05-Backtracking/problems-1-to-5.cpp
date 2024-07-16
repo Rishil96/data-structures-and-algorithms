@@ -203,10 +203,82 @@ vector<vector<string>> solveNQueens(int n) {
 }
 
 
-// 4. 
+// 4. Generate Parentheses
+void getPar(vector<string>& ans, int &opening, int &closing, string &temp) {
+    // Base Case
+    if (opening == 0 && closing == 0) {
+        ans.push_back(temp);
+        return ;
+    }
+
+    // Ek Case
+    // Include Opening bracket
+    if (opening > 0) {
+        opening--;
+        temp.push_back('(');
+        getPar(ans, opening, closing, temp);
+        // Backtrack string and count of opening bracket
+        temp.pop_back();
+        opening++;
+    }
+
+    // Include Closing bracket: we can only include closing bracket if we already have a corresponding opening bracket in string
+    if (closing > opening) {
+        closing--;
+        temp.push_back(')');
+        getPar(ans, opening, closing, temp);
+        // Backtrack string and count of closing bracket
+        temp.pop_back();
+        closing++;
+    }
+
+    return ;
+}
+
+vector<string> generateParenthesis(int n) {
+    vector<string> ans;                     // Store combinations of parentheses in vector
+    int opening = n;                        // Keep track of opening brackets left to use
+    int closing = n;                        // Keep track of closing brackets left to use
+    string temp;                            // Store single combination in string
+    getPar(ans, opening, closing, temp);    // Call recursion to get all combinations of parentheses
+    return ans;
+}
 
 
-// 5.
+// 5. Letter Combinations of a Phone number
+void getCombi(string &digits, vector<string>& ans, string* charMapping, int currIndex, string& temp) {
+    // Base Case
+    if (currIndex >= digits.size()) {
+        ans.push_back(temp);
+        return ;
+    }
+
+    // Ek Case
+    // Loop through charMapping of digit at current index
+    int digit = digits[currIndex] - '0';
+
+    for (auto letter: charMapping[digit]) {
+        temp.push_back(letter);
+        currIndex++;
+        getCombi(digits, ans, charMapping, currIndex, temp);
+        // Backtrack to previous state
+        currIndex--;
+        temp.pop_back();
+    } 
+}
+
+vector<string> letterCombinations(string digits) {
+    vector<string> ans;
+    // Create letter mappings for each digit as per index
+    string charMapping[] = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    // Store single combination
+    string temp;
+    if (digits.size() > 0)
+        // Recursive call to get all combinations
+        getCombi(digits, ans, charMapping, 0, temp);
+
+    return ans;
+}
 
 
 int main() {
