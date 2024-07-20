@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include <algorithm>
 using namespace std;
 
@@ -79,10 +80,74 @@ vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
 }
 
 
-// 13.
+// 13. Permutations 2
+void getPerm(vector<int>& nums, vector<vector<int>>& ans, int &index) {
+    // Base Case
+    if (index >= nums.size()) {
+        ans.push_back(nums);
+        return ;
+    }
+
+    // Ek Case
+    // Map to mark if a number has been placed on current index
+    unordered_map<int, bool> numVis;
+
+    for (int i=index; i<nums.size(); i++) {
+        // If current number was already placed on current index then continue
+        if (numVis.find(nums[i]) != numVis.end()) continue;
+        // Mark current number as visited
+        numVis[nums[i]] = 1;
+        // Place current number at index to i and vice versa
+        swap(nums[i], nums[index]);
+        index++;
+        getPerm(nums, ans, index);
+        // Backtrack to previous state
+        index--;
+        swap(nums[i], nums[index]);
+    }
+
+    return ;
+}
+
+vector<vector<int>> permuteUnique(vector<int>& nums) {
+    vector<vector<int>> ans;
+    int index = 0;
+    getPerm(nums, ans, index);
+
+    return ans;
+}
 
 
-// 14.
+// 14. Beautiful Arrangement
+void findBA(int &n, int &pos, vector<bool> &numUsed, int &count) {
+    // Base Case: Reaching end index means a permutation of beautiful arrangement was formed
+    if (pos > n) {
+        count++;
+        return ;
+    }
+
+    // Ek Case: Try to place numbers from 1 to N on current position as per BA condition
+    for (int num=1; num<=n; num++) {
+        // Only place num if it was not used in previous index and it satisfies the BA condition
+        if (!numUsed[num] && (num % pos == 0 || pos % num == 0)) {
+            // Mark current number as used and increment position to start placing on next index
+            numUsed[num] = 1;
+            pos++;
+            findBA(n, pos, numUsed, count);
+            // Backtrack to previous state
+            pos--;
+            numUsed[num] = 0;
+        }
+    }
+}
+
+int countArrangement(int n) {
+    int count = 0;                          // Keep count of Beautiful Arrangements
+    int pos = 1;                            // Current position to place a number
+    vector<bool> numUsed(n+1, false);       // Track numbers that are already placed
+    findBA(n, pos, numUsed, count);         // Recursive call
+    return count;
+}
 
 
 // 15.
