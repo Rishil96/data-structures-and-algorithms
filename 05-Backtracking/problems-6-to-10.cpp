@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 using namespace std;
 
 
@@ -72,10 +73,48 @@ void solveSudoku(vector<vector<char>>& board) {
 }
 
 
-// 7.
+// 7. 
 
 
-// 8.
+// 8. In-place merge sort
+void mergeInPlace(vector<int>& nums, int start, int mid, int end) {
+    // Gap method: Keep swapping left and right elements if left > right and reduce gap once traversed fully
+    int total_length = end - start + 1;                         // Length of current array
+    int gap = (total_length / 2) + (total_length % 2);          // Gap variable to traverse the current array
+    
+    // Run while loop till gap is greater than 0
+    while (gap > 0) {
+        // Use 2 variables i an j with the gap as calculated above
+        int i = start;
+        int j = i + gap;
+
+        // Traverse the current array using i and j and swap elements if element at i is greater than element at j
+        while (j <= end) {
+            if (nums[i] > nums[j]) swap(nums[i], nums[j]);
+            i++; j++;
+        }
+
+        // Update gap to ceil of gap / 2
+        gap = gap <= 1 ? 0 : (gap / 2) + (gap % 2);
+    }
+
+}
+
+void mergeSort(vector<int> &nums, int start, int end) {
+    // Base Case
+    if (start >= end) return ;
+
+    // Ek Case
+    int mid = start + (end - start) / 2;
+
+    // Left Call
+    mergeSort(nums, start, mid);
+    // Right Call
+    mergeSort(nums, mid+1, end);
+
+    // Merge Call
+    mergeInPlace(nums, start, mid, end);
+}
 
 
 // 9.
