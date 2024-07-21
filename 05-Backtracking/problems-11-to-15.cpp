@@ -150,7 +150,46 @@ int countArrangement(int n) {
 }
 
 
-// 15.
+// 15. Distribute Repeating Integers
+bool canCompleteOrder(unordered_map<int, int> &intFreq, vector<int>& quantity, int &orderIndex) {
+    // Base Case
+    if (orderIndex >= quantity.size()) return true;
+
+    // Ek Case
+    // Loop through integer quantites to fulfill current order
+    for (auto currInt: intFreq) {
+        bool ans = false;
+        // If current integer frequency can fulfill current order, then fulfill it and move to next order
+        if (currInt.second >= quantity[orderIndex]) {
+            // Use current order number of integers from intfreq and move orderindex to next order
+            intFreq[currInt.first] -= quantity[orderIndex];
+            orderIndex++;
+            ans = canCompleteOrder(intFreq, quantity, orderIndex);
+            // If all orders are fulfilled return true
+            if (ans) return ans;
+            // Backtrack to previous state
+            orderIndex--;
+            intFreq[currInt.first] += quantity[orderIndex];
+        }
+    }
+
+    return false;
+}
+
+bool canDistribute(vector<int>& nums, vector<int>& quantity) {
+    // Create a frequency map that holds the frequency of each unique integer in nums
+    unordered_map<int, int> intFreq;
+    for (auto n: nums) intFreq[n]++;
+
+    /* 
+    Sort quantity to fulfill the highest quantity first so we can tell earlier 
+    if all orders can be fulfiled
+    */
+    sort(quantity.rbegin(),  quantity.rend());
+    int orderIndex = 0;
+    return canCompleteOrder(intFreq, quantity, orderIndex);
+}
+
 
 int main() {
 
