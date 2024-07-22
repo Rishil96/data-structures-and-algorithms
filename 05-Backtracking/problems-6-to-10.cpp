@@ -73,7 +73,75 @@ void solveSudoku(vector<vector<char>>& board) {
 }
 
 
-// 7. 
+// 7. Count Inversions
+long long int merge(long long arr[], vector<long long>& temp, int start, int mid, int end) {
+    // i => traverse left subarray
+    // j => traverse right subarray
+    // k => index to write smaller elements first in temp
+    // c => store count of inversions
+    int i=start, j=mid+1, k=start;
+    long long int c = 0;
+    
+    // Loop till i and j are valid indexes in respective subarrays
+    while (i <= mid && j <= end) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        }
+        else {
+            // If inversion/swap is needed, make the swap and store count
+            temp[k++] = arr[j++];
+            /*
+            In this case, right element was smaller than left element 
+            means it will come before all the remaining elements on left subarray
+            so if there are 3 more elements remaining to be placed from left
+            subarray then 3 swaps have to be done for current right element
+            to be placed at its correct position and that calculation can be
+            done by (mid - i + 1)
+            */
+            c += mid - i + 1;
+        }
+    }
+    
+    while (i <= mid) {
+        temp[k++] = arr[i++];
+    }
+    
+    while (j <= end) {
+        temp[k++] = arr[j++];
+    }
+    
+    while (start <= end) {
+        arr[start] = temp[start];
+        ++start;
+    }
+    
+    return c;
+}
+
+long long int mergeSort(long long arr[], vector<long long>& temp, long long start, long long end) {
+    // Base Case
+    if (start >= end) return 0;
+    
+    long long mid = start + (end - start) / 2;
+    long long int c = 0;
+    
+    // Call merge sort for left and right subarray and merge function
+    c += mergeSort(arr, temp, start, mid);
+    c += mergeSort(arr, temp, mid+1, end);
+    
+    c +=merge(arr, temp, start, mid, end);
+    
+    // Return the sum of both merge sort and merge function calls
+    return c;
+}
+
+long long int inversionCount(long long arr[], int n) {
+    long long int count;                        // Store total inversion count
+    vector<long long> temp(n, 0);               // Temporary array for merge sort
+    count = mergeSort(arr, temp, 0, n-1);       // Recursive call
+
+    return count;
+}
 
 
 // 8. In-place merge sort
@@ -117,7 +185,7 @@ void mergeSort(vector<int> &nums, int start, int end) {
 }
 
 
-// 9.
+// 9. 
 
 
 // 10.
