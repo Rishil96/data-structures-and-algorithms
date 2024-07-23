@@ -224,7 +224,32 @@ int maxSubArray(vector<int>& nums) {
 
 
 // 10. Quick Sort with end element as pivot
+void quickSort(int a[], int start, int end) {
+    // Base Case
+    if (start >= end) return ;
 
+    // Ek Case
+    // Partition Logic
+    int pivot = end;
+    int i = start - 1;
+    int j = start;
+
+    // Use i and j to traverse the array such that if j element is less than pivot element then place it on i after incrementing i.
+    while (j < pivot) {
+        if (a[j] < a[pivot]) {
+            ++i;
+            swap(a[i], a[j]);
+        }
+        j++;
+    }
+    i++;
+    swap(a[i], a[pivot]);
+    pivot = i;
+
+    // Call quick sort for left and right subarrays from pivot
+    quickSort(a, start, pivot - 1);
+    quickSort(a, pivot+1, end);
+}
 
 
 
