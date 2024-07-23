@@ -185,10 +185,47 @@ void mergeSort(vector<int> &nums, int start, int end) {
 }
 
 
-// 9. 
+// 9. Maximum Subarray Sum
+int getSum(vector<int>& nums, int start, int end) {
+    // Base Case: If subarray is a single element return it
+    if (start == end) return nums[start];
+
+    // Ek Case
+    int mid = start + (end - start) / 2;
+
+    // Get maximum subarray sum from left and right
+    int maxLeftSubArraySum = getSum(nums, start, mid);
+    int maxRightSubArraySum = getSum(nums, mid+1, end);
+
+    // Calculate cross border sum i.e. from middle
+    int leftBorderSum = 0;
+    int rightBorderSum = 0;
+    int maxLeftBorderSum = INT_MIN;
+    int maxRightBorderSum = INT_MIN;
+    
+    // Loop to get max sum from left side of middle subarray
+    for (int i=mid; i>=start; i--) {
+        leftBorderSum += nums[i];
+        maxLeftBorderSum = max(leftBorderSum, maxLeftBorderSum);
+    }
+
+    // Loop to get max sum from right side of middle subarray
+    for (int i=mid+1; i<=end; i++) {
+        rightBorderSum += nums[i];
+        maxRightBorderSum = max(rightBorderSum, maxRightBorderSum);
+    }
+
+    return max(maxLeftBorderSum + maxRightBorderSum, max(maxLeftSubArraySum, maxRightSubArraySum));
+}
+
+int maxSubArray(vector<int>& nums) {
+    return getSum(nums, 0, nums.size()-1);
+}
 
 
-// 10.
+// 10. Quick Sort with end element as pivot
+
+
 
 
 int main() {
