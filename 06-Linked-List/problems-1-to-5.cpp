@@ -94,10 +94,60 @@ ListNode* reverseKGroup(ListNode* head, int k) {
 }
 
 
-// 4.
+// 4. Linked List Cycle
+bool hasCycle(ListNode *head) {
+    // Use 2 pointers slow and fast to traverse the list at different speed
+    ListNode* slow = head;
+    ListNode* fast = head;
+
+    // Move fast twice and slow once every iteration
+    while (fast) {
+        fast = fast -> next;
+        if (fast) {
+            slow = slow -> next;
+            fast = fast -> next;
+        }
+
+        // If slow and fast pointers meet at a node, it means loop is present
+        if (slow == fast) return true;
+    }
+
+    // If fast pointer reaches NULL, it means no loop present
+    return false;
+}
 
 
-// 5.
+// 5. Linked List Cycle 2
+ListNode *detectCycle(ListNode *head) {
+    if (!head) return head; 
+
+    // Use slow and fast pointer to detect cycle
+    ListNode* slow = head;
+    ListNode* fast = head;
+
+    // Move fast twice and slow once till they both meet or fast reaches NULL
+    do  {
+        fast = fast -> next;
+        if (fast) {
+            slow = slow -> next;
+            fast = fast -> next;
+        }
+        if (slow == fast) break;
+    } while (fast);
+
+    // Return fast i.e. NULL if cycle is not present
+    if (!fast) return fast;
+
+    // Reset slow to head and start moving both pointers once every iteration till they meet again
+    slow = head;
+    while (slow != fast) {
+        slow = slow -> next;
+        fast = fast -> next;
+    }
+
+    // Once they meet again they are on the starting point of the array
+    return slow;
+}
 
 
 
