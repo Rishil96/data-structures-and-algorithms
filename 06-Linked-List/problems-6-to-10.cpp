@@ -204,7 +204,84 @@ ListNode* segregate(ListNode *head) {
 }
 
 
-// 10.
+// 10. Add numbers in a list
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    // Temporary variables to traverse through list
+    ListNode* temp1 = l1;
+    ListNode* temp2 = l2;
+
+    // Add both Linked List
+    ListNode* ansHead = NULL;
+    ListNode* ansTail = NULL;
+
+    int carry = 0;
+
+    // Traverse both lists together till digits are present
+    while (temp1 && temp2) {
+        int sum = temp1 -> val + temp2 -> val + carry;
+        int digit = sum % 10;
+        carry = sum / 10;
+        ListNode* newNode = new ListNode(digit);
+        if (!ansHead) {
+            ansHead = newNode;
+            ansTail = newNode;
+        }
+        else {
+            ansTail -> next = newNode;
+            ansTail = newNode;
+        }
+        temp1 = temp1 -> next;
+        temp2 = temp2 -> next;
+    }
+
+    // Traverse left list if digits are present
+    while (temp1) {
+        int sum = carry + temp1 -> val;
+        int digit = sum % 10;
+        carry = sum / 10;
+        
+        ListNode* newNode = new ListNode(digit);
+        if (!ansHead) {
+            ansHead = newNode;
+            ansTail = newNode;
+        }
+        else {
+            ansTail -> next = newNode;
+            ansTail = newNode;
+        }
+        temp1 = temp1 -> next;
+    }
+    
+    // Traverse right list if digits are present
+    while (temp2) {
+        int sum = carry + temp2 -> val;
+        int digit = sum % 10;
+        carry = sum / 10;
+        
+        ListNode* newNode = new ListNode(digit);
+        if (!ansHead) {
+            ansHead = newNode;
+            ansTail = newNode;
+        }
+        else {
+            ansTail -> next = newNode;
+            ansTail = newNode;
+        }
+        temp2 = temp2 -> next;
+    }
+
+    while (carry != 0) {
+        int sum = carry;
+        int digit = carry % 10;
+        carry = carry / 10;
+
+        ListNode* newNode = new ListNode(digit);
+        ansTail -> next = newNode;
+        ansTail = newNode;
+    }
+
+    return ansHead;
+}
 
 
 
