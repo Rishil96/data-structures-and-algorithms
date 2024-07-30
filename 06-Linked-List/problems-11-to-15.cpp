@@ -10,6 +10,19 @@ struct ListNode {
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
+struct Node
+{
+	int data;
+	struct Node * next;
+	struct Node * bottom;
+	
+	Node(int x){
+	    data = x;
+	    next = NULL;
+	    bottom = NULL;
+	}	
+};
+
 
 // 11. Remove nth node from end of list
 int getLen(ListNode* head) {
@@ -223,10 +236,69 @@ ListNode* sortList(ListNode* head) {
 }
 
 
-// 14.
+// 14. Flatten Linked List
+Node* flattenHelper(Node* currHead) {
+    // Base Case: No next pointer means no next list
+    if (!currHead) {
+        return currHead;
+    }
+    
+    // Recursive Call to reach the last list first so merging can be done from end to start
+    Node* nextHead = flattenHelper(currHead -> next);
+    
+    // Merge current and next head and return the head of merged list
+    Node* head = NULL;
+    Node* tail = NULL;
+    
+    // Apply the algorithm of merging 2 sorted linked list to merge them
+    while (currHead && nextHead) {
+        if (currHead -> data < nextHead -> data) {
+            if (!head) {
+                head = tail = currHead;
+            }
+            else {
+                tail -> bottom = currHead;
+                tail = tail -> bottom;
+            }
+            currHead = currHead -> bottom;
+        }
+        else {
+            if (!head) {
+                head = tail = nextHead;
+            }
+            else {
+                tail -> bottom = nextHead;
+                tail = tail -> bottom;
+            }
+            nextHead = nextHead -> bottom;
+        }
+    }
+    
+    // If currhead has remaining nodes, add them to the end
+    if (currHead && head) {
+        tail -> bottom = currHead;
+    }
+    else if (currHead && !head) {
+        head = tail = currHead;
+    }
+    
+    // If nextHead has remaining nodes, add them to the end
+    if (nextHead && head) {
+        tail -> bottom = nextHead;
+    }
+    else if (nextHead && !head) {
+        head = tail = nextHead;
+    }
+    
+    return head;
+}
+
+Node *flatten(Node *root) {
+    return flattenHelper(root);
+}
 
 
-// 15.
+// 15. Copy Linked List with Random Pointer
 
 
 

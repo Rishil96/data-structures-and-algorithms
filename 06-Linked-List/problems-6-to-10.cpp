@@ -41,20 +41,18 @@ void removeCycle(ListNode* &head) {
     if (!fast) return ;
 
     // Step 2: Reset slow to head and start traversing with both slow and fast once
-    slow = head;
-    // Use this to store previous fast pointer so that we can remove the next pointer of node just before starting point of loop
-    ListNode* tail = NULL;      
-    
-    while (slow != fast) {
-        slow = slow -> next;
-        tail = fast;
-        fast = fast -> next;
-    }
-
-    // Once slow and fast pointer meet we can remove the next pointer of tail to break the cycle
-    tail -> next = NULL;
-
-    return ;
+        slow = head;
+        while (slow != fast) {      // Move slow and fast once till they meet again
+            slow = slow -> next;
+            fast = fast -> next;
+        }
+        
+        // Step 3: Now slow and fast both are at the starting point of the loop
+        // Set slow to head and move slow till we get to the point where slow points at the starting point of the loop
+        while (slow -> next != fast) slow = slow -> next;
+        slow -> next = NULL;
+        
+        return ;
 }
 
 
