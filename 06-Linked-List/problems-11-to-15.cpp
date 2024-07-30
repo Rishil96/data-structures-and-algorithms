@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 using namespace std;
 
 // ListNode datastructure
@@ -15,11 +16,13 @@ struct Node
 	int data;
 	struct Node * next;
 	struct Node * bottom;
+	struct Node * random;
 	
 	Node(int x){
 	    data = x;
 	    next = NULL;
 	    bottom = NULL;
+	    random = NULL;
 	}	
 };
 
@@ -299,7 +302,43 @@ Node *flatten(Node *root) {
 
 
 // 15. Copy Linked List with Random Pointer
+Node* copyRandomList(Node* head) {
+    // 0. Edge Case: Empty list
+    if (!head) return NULL;
 
+    // 1. Create the copylist with just next pointers
+    Node* temp = head;
+    Node* copyHead = new Node(temp -> data);
+    Node* copyTail = copyHead;
+    temp = temp -> next;
+
+    // 2. While creating the initial copy list, track the og node and copy node in a map
+    map<Node*, Node*> copyMap;
+    copyMap[head] = copyHead;
+
+    // Build the copy list by creating nodes with same values as in OG list and maintain mapping of it
+    while (temp) {
+        Node* newNode = new Node(temp -> data);
+        copyMap[temp] = newNode;
+        copyTail -> next = newNode;
+        copyTail = newNode;
+        temp = temp -> next;
+    }
+
+    // 3. Add random pointer to the copy list using the map that was created
+    // Resetting temp and copytail to add random pointers to the copy array
+    temp = head;
+    copyTail = copyHead;
+
+    // Add random pointer to each copy node using the map created earlier
+    while (temp) {
+        if (temp -> random) copyTail -> random = copyMap[temp -> random];
+        temp = temp -> next;
+        copyTail = copyTail -> next;
+    }
+
+    return copyHead;
+}
 
 
 int main() {
