@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 
@@ -97,10 +98,100 @@ void linkdelete(struct Node **head, int n, int m) {
 }
 
 
-// 18. 
+// 18. Minimum/Maximum number of nodes between critical points
+vector<int> nodesBetweenCriticalPoints(ListNode* head) {
+    // Store ans in variable
+    vector<int> ans{-1, -1};
+
+    // Edge Case
+    if (!head || !head -> next) return ans;
+
+    // Use 2 pointers to find critical points
+    ListNode* prevNode = head;
+    ListNode* currNode = head -> next;
+
+    int index = 1;
+
+    int firstCriticalIndex = -1;
+    int recentCriticalIndex = -1;
+
+    while (currNode) {
+        cout << currNode -> val << endl;
+        // Check first if curr node has both prev and next node
+        if (prevNode && currNode -> next) {
+            
+            // Check if current node is a critical point i.e. local minima/maxima
+            bool isLocalMinima = prevNode -> val > currNode -> val && 
+                                    currNode -> val < currNode -> next -> val;
+            bool isLocalMaxima = prevNode -> val < currNode -> val && 
+                                    currNode -> val > currNode -> next -> val;
+            
+            // Update both indexes in case of current node being a critical point
+            if (isLocalMinima || isLocalMaxima) {
+                if (firstCriticalIndex == -1) {
+                    firstCriticalIndex = index;
+                    recentCriticalIndex = index;
+                } 
+                else {
+                    // Calculate minimum distance between current and previous critical point
+                    ans[0] = (ans[0] == -1) ? index - recentCriticalIndex : min(ans[0], index - recentCriticalIndex);
+                    recentCriticalIndex = index;
+                }
+            }
+        }
+
+        prevNode = currNode;
+        currNode = currNode -> next;
+        index++;
+    }
+
+    // Calculate maximum distance between first and last critical point
+    ans[1] = (firstCriticalIndex != recentCriticalIndex) ? max(ans[1], recentCriticalIndex - firstCriticalIndex) : -1;
+
+    return ans;
+}
+
+vector<int> nodesBetweenCriticalPointsBetter(ListNode* head) {
+    vector<int> ans(2, -1);
+    // Traversal pointers
+    ListNode* prevNode = NULL;
+    ListNode* currNode = head;
+
+    // Critical Points tracker
+    int index = 0;
+    int firstCritical = -1;
+    int latestCritical = -1;
+
+    while (currNode -> next) {
+        // Check if local minima
+        bool isMinima = prevNode && currNode -> val < prevNode -> val && currNode -> val < currNode -> next -> val;
+        // Check if local maxima
+        bool isMaxima = prevNode && currNode -> val > prevNode -> val && currNode -> val > currNode -> next -> val;
+
+        if (isMinima || isMaxima) {
+            if (firstCritical == -1) {
+                firstCritical = index;
+                latestCritical = index;
+            }
+            else {
+                // Update minimum distance
+                ans[0] = ans[0] == -1 ? index - latestCritical : min(ans[0], index - latestCritical);
+                // Update Maximum distance
+                ans[1] = ans[1] == -1 ? index - firstCritical : max(ans[1], index - firstCritical);
+                latestCritical = index;
+            }
+        }
+
+        prevNode = currNode;
+        currNode = currNode -> next;
+        index++;
+    }
+
+    return ans;
+}
 
 
-// 19.
+// 19. 
 
 
 // 20.
