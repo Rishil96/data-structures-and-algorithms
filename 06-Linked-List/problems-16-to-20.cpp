@@ -24,6 +24,14 @@ struct Node
 
 };
 
+class Node2 {
+public:
+    int val;
+    Node2* prev;
+    Node2* next;
+    Node2* child;
+};
+
 
 // 16. Rotate List
 int length(ListNode* head) {
@@ -191,11 +199,65 @@ vector<int> nodesBetweenCriticalPointsBetter(ListNode* head) {
 }
 
 
-// 19. 
+// 19. Merge nodes between zeros
+ListNode* mergeNodes(ListNode* head) {
+    // Step 1: Setup 2 pointers
+    ListNode* checkPoint = head;                // Merge point (0 node)
+    ListNode* adder = head -> next;             // Traversal node (add non-zero nodes to merge point)
+
+    // Run till valid traversal node
+    while (adder -> next) {
+        // If current traversal node is not a checkpoint, then add val and move to next node
+        if (adder -> val != 0) {
+            checkPoint -> val += adder -> val;
+            adder = adder -> next;
+        }
+        // Else setup new checkpoint
+        else {
+            checkPoint -> next = adder;
+            checkPoint = checkPoint -> next;
+            adder = adder -> next;
+        }
+    }
+
+    // Checkpoint won't reach last 0th node because of while loop condition, so we can remove extra nodes from the end easily
+    checkPoint -> next = NULL;
+
+    return head;
+}
 
 
-// 20.
+// 20. Flatten a multilevel doubly linked list
+Node2* flatten(Node2* head) {
+    // Base Case: Return head in case of empty list
+    if (!head) return head;
 
+    // Ek Case
+
+    // Case 1: If head doesn't have a child, simply move to the next node
+    if (!head -> child) {
+        Node2* nextNode = flatten(head -> next);            // Traverse next node using recursion
+        head -> next = nextNode;                            // Set next of currentHead to nextHead
+        if (nextNode) nextNode -> prev = head;              // Set prev of nextHead to currentHead
+    }
+    // Case 2: If head has a child node
+    else {
+        Node2* nextNode = head -> next;                     // Store next of head as we will overwrite it
+        Node2* childNode = flatten(head -> child);          // Traverse through child of current head
+        head -> next = childNode;                           // Set next of currentHead to childHead
+        childNode -> prev = head;                           // Set prev of childHead to currentHead
+        head -> child = NULL;                               // Remove child pointer to make valid DLL
+
+        // Attach next list to current list's tail i.e. after merging the currentHead with childHead
+        // Using tail pointer, traverse to the last node of current list and attach tail to nexthead
+        Node2* tail = head;
+        while (tail && tail -> next) tail = tail -> next;
+        tail -> next = nextNode;
+        if (nextNode) nextNode -> prev = tail;
+    }
+
+    return head;
+}
 
 
 int main() {
