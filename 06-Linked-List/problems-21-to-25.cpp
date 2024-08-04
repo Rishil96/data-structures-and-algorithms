@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 using namespace std;
 
 // ListNode datastructure
@@ -119,10 +120,70 @@ ListNode* doubleIt(ListNode* head) {
 }
 
 
-// 24.
+// 24. Swapping nodes in a linked list
+ListNode* swapNodes(ListNode* head, int k) {
+    // Bring begin pointer to the kth node from beginning
+    ListNode* begin = head;
+    for (int i=0; i<k-1; i++) begin = begin -> next;
+
+    // Using window logic, use temp as right of window and end pointer as left of window
+    // Move the window till temp is a valid node and once its not, end pointer will be on kth last node
+    ListNode* end = head;
+    ListNode* temp = begin -> next;
+    while (temp) {
+        end = end -> next;
+        temp = temp -> next;
+    } 
+
+    // Swap the values of begin and end nodes
+    int tempVal = begin -> val;
+    begin -> val = end -> val;
+    end -> val = tempVal;
+
+    return head;
+}
 
 
-// 25.
+// 25. Remove zero sum consecutive nodes from linked list
+ListNode* removeZeroSumSublists(ListNode* head) {
+    // Create answer list
+    if(head == NULL) return head;
+    unordered_map<int, ListNode*> prefixMap;
+    ListNode* dummy = new ListNode(0);
+    
+    // Connect head to dummy node 
+    dummy -> next = head;
+    prefixMap[0] = dummy;
+
+    // Variable to save prefix sum
+    int preSum = 0;
+
+    while(head != NULL){
+        preSum += head -> val;
+        // If prefix sum already exists in map, it means zero sum continuous nodes were found
+        if (prefixMap.find(preSum) != prefixMap.end()) {
+            
+            ListNode* start = prefixMap[preSum];
+            int prevSum = preSum;
+
+            while(start != NULL && start != head) {
+                start = start -> next;
+                prevSum += start -> val;
+                if(start != head) {
+                    prefixMap.erase(prevSum);
+                }
+            }
+            prefixMap[preSum] -> next = start -> next;
+        }
+        // Add the prefix sum with current node in map
+        else {
+            prefixMap[preSum] = head;
+        }
+        head = head -> next;
+    }
+
+    return dummy -> next;
+}
 
 
 
