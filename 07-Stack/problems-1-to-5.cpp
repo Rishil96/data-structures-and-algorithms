@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include <vector>
 using namespace std;
 
 // 1. Reverse a stack
@@ -95,16 +96,78 @@ void sortStack(stack<int> &s) {
 }
 
 
-// 4.
+// 4. Remove Redundant Parentheses
+string removeRedundantParentheses(string expression) {
+    vector<bool> valid(expression.size(), 1);
+    stack<pair<char, int>> chars;
+    
+    for (int i=0; i<expression.size(); i++) {
+        char ch = expression[i];
+        // Add opening bracket and its index in stack
+        if (ch == '(' || ch == '+' || ch == '-' || ch == '*' || ch == '/') {
+            chars.push({ch, i});
+        }
+        // If operator found between closing bracket, it is valid bracket else it is invalid bracket
+        else if (ch == ')') {
+            // Pop from stack till we get corresponding opening bracket and mark true if any operator found
+            bool operatorFound = false;
+            while (!chars.empty() && chars.top().first != '(') {
+                operatorFound = true;
+                chars.pop();
+            }
+            // If operator not found then mark both opening and closing brackets as invalid
+            if (!operatorFound) {
+                valid[chars.top().second] = false;
+                valid[i] = false;
+            }
+            // Pop opening bracket from stack
+            chars.pop();
+        }
+    }
+
+    // Build answer using expression input and valid bool array
+    string ans;
+    for (int i=0; i<expression.size(); i++) {
+        if (valid[i]) ans.push_back(expression[i]);
+    }
+
+    return ans;
+}
 
 
-// 5.
+// 5. MinStack
+class MinStack {
+public:
+    vector<pair<int, int>> st;
+    MinStack() {
+        
+    }
+    
+    void push(int val) {
+        if (st.empty()) st.push_back({val, val});
+        else st.push_back({val, min(val, st.back().second)});
+    }
+    
+    void pop() {
+        st.pop_back();
+    }
+    
+    int top() {
+        return st.back().first;
+    }
+    
+    int getMin() {
+        return st.back().second;
+    }
+};
 
 
 
 int main() {
 
-    
+    cout << "Remove Redundant Parentheses 1: " << removeRedundantParentheses("(A*(B+C))") << endl;
+    cout << "Remove Redundant Parentheses 2: " << removeRedundantParentheses("A+(B+(C))") << endl;
+    cout << "Remove Redundant Parentheses 3: " << removeRedundantParentheses("((A+B))+((C+D)+E)-((F*G))") << endl;
 
     return 0;
 }
