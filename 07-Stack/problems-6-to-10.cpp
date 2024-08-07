@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stack>
+#include <vector>
 using namespace std;
+
 
 // 6. Longest Valid Parentheses
 int longestValidParentheses(string s) {
@@ -31,13 +33,88 @@ int longestValidParentheses(string s) {
 }
 
 
-// 7.
+// 7. Largest Rectangle in a Histogram
+vector<int> getPSI(vector<int>& heights) {
+    vector<int> ans(heights.size(), -1);            // Initialize answer array
+    stack<int> st;                                  // Use stack to get prev smaller index
+    st.push(-1);                                    // For first height 0th index, prev smaller index will be -1
+
+    for (int i=0; i<heights.size(); i++) {
+        // Remove from stack till top element at stack is greater than our current element
+        while (!st.empty() && st.top() != -1 && heights[i] <= heights[st.top()]) {
+            st.pop();
+        }
+
+        // Push top index if stack is not empty
+        if (!st.empty()) ans[i] = st.top();
+        // Push current index in stack for future heights
+        st.push(i);
+    }
+
+    return ans;
+}
+
+vector<int> getNSI(vector<int>& heights) {
+    vector<int> ans(heights.size(), heights.size());
+    stack<int> st;
+    st.push(heights.size());
+
+    for (int i=heights.size()-1; i>=0; i--) {
+        // Remove from stack till top element at stack is greater than our current element
+        while (!st.empty() && st.top() != heights.size() && heights[i] <= heights[st.top()]) {
+            st.pop();
+        }
+
+        // Push top index of stack if its not empty
+        if (!st.empty()) ans[i] = st.top();
+        // Push current index for future heights
+        st.push(i);
+    }
+
+    return ans;
+}
+
+int largestRectangleArea(vector<int>& heights) {
+    // Get next smaller and previous smaller indexes of every bar
+    vector<int> nextSmallerIndex = getNSI(heights);
+    vector<int> prevSmallerIndex = getPSI(heights);
+
+    // Store max area in this variable
+    int area = INT_MIN;
+
+    for (int i=0; i<heights.size(); i++) {
+        // Calculate area with respect to current bar of histogram
+        int currArea = (nextSmallerIndex[i] - prevSmallerIndex[i] - 1) * heights[i];
+        // Update max area
+        area = max(area, currArea);
+    }
+
+    return area;
+}
 
 
-// 8.
+// 8. Remove all adjacent duplicates in a string
+string removeDuplicates(string s) {
+    // If top element of stack is not equal to current element of s, push it in stack or else pop top from stack
+    stack<char> st;
+    for (auto ch: s) {
+        if (st.empty() || st.top() != ch) st.push(ch);
+        else st.pop();
+    }
+
+    // Build answer from popping elements from stack
+    string ans;
+    while (!st.empty()) {
+        ans.push_back(st.top());
+        st.pop();
+    }
+    
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
 
 
-// 9.
+// 9. 
 
 
 // 10.
