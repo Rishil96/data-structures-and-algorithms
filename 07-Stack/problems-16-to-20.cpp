@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stack>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 
@@ -90,10 +91,68 @@ int maximalRectangle(vector<vector<char>>& matrix) {
 }
 
 
-// 17. 
+// 17. Car Fleet
+int carFleet(int target, vector<int>& position, vector<int>& speed) {
+    // 1. Create a pair object that contains position and speed of a car and add them to a vector "cars"
+    // Position, Speed
+    vector<pair<float, float>> cars;
+    for (int i=0; i<position.size(); i++) {
+        cars.push_back({position[i], speed[i]});
+    }
+
+    // 2. Sort the cars vector based on their position on the lane
+    sort(cars.begin(), cars.end());
+
+    // 3. Use a stack to store the time each car will take to reach the target position
+    stack<float> timeTaken;
+
+    // 4. Loop through cars and calculate the time taken for each car and add it to stack
+    // Note: If a previous car is faster to reach the target than current car then pop it to form fleet
+    for (int i=0; i<cars.size(); i++) {
+        // Current car info
+        float currPos = cars[i].first;
+        float currSpd = cars[i].second;
+    
+        // Current car time taken to reach target (time = distance / speed)
+        float currTime = (target - currPos) / currSpd;
+
+        // Remove previous cars that will form a fleet with current car
+        while (!timeTaken.empty() && timeTaken.top() <= currTime) timeTaken.pop();
+
+        // Add current car to stack
+        timeTaken.push(currTime);
+    }
+
+    return timeTaken.size();
+}
 
 
-// 18.
+// 18. Car Fleet 2
+vector<double> getCollisionTimes(vector<vector<int>>& cars) {
+    // Stores collision time of every car
+    vector<double> answer(cars.size(), -1);
+    // Stores index of cars ahead of current car in loop
+    stack<int> st;
+
+    // Go from rightmost car to left 
+    for (int i=cars.size()-1; i>=0; i--) {
+        // Remove all cars from the stack that are faster than the current car
+        while (!st.empty() && cars[st.top()][1] >= cars[i][1]) st.pop();
+
+        // Check if current car can collide from the next car in stack
+        while (!st.empty()) {
+            double collTime = (double)(cars[st.top()][0] - cars[i][0]) / (cars[i][1] - cars[st.top()][1]);
+            if (answer[st.top()] == -1 || collTime <= answer[st.top()]) {
+                answer[i] = collTime;
+                break;
+            }
+            st.pop();
+        }
+        st.push(i);
+    }
+
+    return answer;
+}
 
 
 // 19. Asteroid Collision
@@ -109,7 +168,7 @@ vector<int> asteroidCollision(vector<int>& asteroids) {
             (col.top() < 0 && currAst > 0) )         // Left moving left and right moving right 
             ) {
             col.push(currAst);
-        }
+        }   
         // Collision Case
         else {
             col.push(currAst);                          // Add current asteroid in col stack
