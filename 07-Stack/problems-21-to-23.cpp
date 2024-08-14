@@ -2,6 +2,7 @@
 #include <stack>
 using namespace std;
 
+
 // 21. Remove k digits
 string removeKdigits(string num, int k) {
     // Variable on which we will build answer
