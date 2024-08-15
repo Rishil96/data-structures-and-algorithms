@@ -101,7 +101,27 @@ string FirstNonRepeating(string A){
 
 
 // 5. Gas station
+int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+    int deficit = 0;            // Gas deficit at a single moment/index
+    int balance = 0;            // Gas balance at a single moment/index
+    int startPosition = 0;      // Starting position of car to complete one full cycle
 
+    for (int station=0; station<gas.size(); station++) {
+        // Add gas from current station and remove cost to reach current station
+        balance += gas[station] - cost[station];
+        // If balance goes below 0, it means car didn't have enough gas to reach current station
+        if (balance < 0) {
+            deficit += balance;                 // Add negative balance to deficit
+            balance = 0;                        // Update balance to 0
+            startPosition = station + 1;        // Start rotation from next station 
+        }
+    }
+
+    // The logic of deficit is to keep track of the total cost and gas tracked for all stations that were traversed so that we don't need to traverse the array again to check from a perspective of a different station.
+
+    // If balance + deficit is greater than 0, it means we found an answer from which a rotation was made
+    return (balance + deficit >= 0) ? startPosition : -1;
+}
 
 
 int main() {
