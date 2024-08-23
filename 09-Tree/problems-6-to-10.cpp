@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <map>
+#include <queue>
 using namespace std;
 
 
@@ -127,10 +129,65 @@ TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
 }
 
 
-// 9. 
+// 9. Top View of Binary Tree
+vector<int> topView(Node *root) {
+    map<int, int> mp;
+    queue<pair<int, Node*>> q;
+    vector<int> ans;
+    
+    // Push root with horizontal level 0
+    q.push({0, root});
+    
+    // Level order traversal to find top view
+    while (!q.empty()) {
+        // Get front node from queue and pop
+        auto front = q.front(); q.pop();
+        Node* fNode = front.second;
+        int level = front.first;
+        
+        // Add to map
+        if (mp.find(level) == mp.end()) 
+            mp[level] = fNode -> data;
+        
+        // Add children nodes for next level
+        if (fNode -> left) q.push({level - 1, fNode -> left});
+        if (fNode -> right) q.push({level + 1, fNode -> right});
+    }
+    
+    // Append top view from map to vector
+    for (auto it: mp) ans.push_back(it.second);
+    
+    return ans;
+}
 
 
-// 10.
+// 10. Bottom View of Binary Tree
+vector <int> bottomView(Node *root) {
+    map<int, int> mp;
+    queue<pair<int, Node*>> q;
+    vector<int> ans;
+    
+    q.push({0, root});
+    
+    // Level order traversal for bottom view
+    while (!q.empty()) {
+        auto front = q.front(); q.pop();
+        int level = front.first;
+        Node* fNode = front.second;
+        
+        // Add to map
+        mp[level] = fNode -> data;
+        
+        // Add children
+        if (fNode -> left) q.push({level - 1, fNode -> left});
+        if (fNode -> right) q.push({level + 1, fNode -> right});
+    }
+    
+    // Append bottom view from map to vector
+    for (auto it: mp) ans.push_back(it.second);
+    
+    return ans;
+}
 
 
 
