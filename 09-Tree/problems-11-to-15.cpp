@@ -123,10 +123,76 @@ vector<int> diagonal(Node *root)
 }
 
 
-// 14. 
+// 14. Boundary Traversal of a Binary Tree
+bool isLeaf(Node* root) {
+    if(root->left==NULL && root->right==NULL)
+        return true;
+    return false;
+}
+
+void leftTraversal(Node* root, vector<int>& res) {
+    Node* curr = root;
+    while(curr != NULL) {
+        if (!isLeaf(curr)) res.push_back(curr->data);
+        
+        if(curr->left)
+            curr=curr->left;
+        else
+            curr=curr->right;
+    }
+    return;
+}
+
+void leafTraversal(Node* root, vector<int>& res) {
+    if(root == NULL)
+        return ;
+    if(isLeaf(root)) res.push_back(root -> data);
+    leafTraversal(root -> left, res);
+    leafTraversal(root -> right, res);
+}
+
+void rightTraversal(Node* root,vector<int>& res) {
+    if(root == NULL) return;
+    vector<int> temp;
+    while(root != NULL)
+    {
+        if (!isLeaf(root)) temp.push_back(root -> data);
+        
+        if(root -> right)
+            root = root -> right;
+        else
+            root = root -> left;
+    }
+    reverse(temp.begin(),temp.end());
+    for(auto x : temp)
+    res.push_back(x);
+}
+
+vector <int> boundary(Node *root) {
+    vector<int> res;
+    if(!isLeaf(root)) res.push_back(root -> data);
+    leftTraversal(root -> left, res);
+    leafTraversal(root, res);
+    rightTraversal(root -> right, res);
+    return res;
+}
 
 
-// 15.
+// 15. Same Tree
+bool isSameTree(TreeNode* p, TreeNode* q) {
+    // Base Case: Return true when both are null
+    if (!p && !q) return true;
+
+    // Ek Case: If p val is not equal to q val or any one does not exist while the other exists return false
+    if ((!p || !q) || (p -> val != q -> val)) return false;
+
+    // Recursive Case: Check left and right subtree of p and q
+    bool leftAns = isSameTree(p -> left, q -> left);
+    bool rightAns = isSameTree(p -> right, q -> right);
+
+    // Only return true if both subtrees are equal
+    return leftAns && rightAns;
+}
 
 
 
