@@ -142,7 +142,40 @@ vector<vector<int>> verticalTraversal(TreeNode* root) {
 }
 
 
-// 20.
+// 20. K Sum Paths
+int paths = 0;
+
+void psHelper(TreeNode* root, long long targetSum, int &paths) {
+    // Base Case
+    if (!root) return ;
+
+    // Ek Case: Check if subtracting current node value gets us the targetSum and update ans accordingly
+    if (targetSum - root -> val == 0) paths++;
+
+    // Left and Right traversal after subtracting current node value from targetSum
+    psHelper(root -> left, targetSum - root -> val, paths);
+    psHelper(root -> right, targetSum - root -> val, paths);
+
+    return ;
+}
+
+int pathSum(TreeNode* root, int targetSum) {
+    /*
+    We need 3 recursive calls
+        1. Find path starting from current node
+        2. Recursive call to do the same starting from left child
+        3. Recursive call to do the same starting from right child
+    */
+    // Find paths from current node
+    psHelper(root, targetSum, paths);
+    // Start fresh paths from both children and consider tham roots
+    if (root) {
+        pathSum(root -> left, targetSum);
+        pathSum(root -> right, targetSum);
+    }
+
+    return paths;
+}
 
 
 
