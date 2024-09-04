@@ -1,4 +1,6 @@
 #include <iostream>
+#include <queue>
+#include <unordered_map>
 using namespace std;
 
 struct TreeNode {
@@ -77,10 +79,90 @@ int getMaxSum(Node *root) {
 }
 
 
-// 23.
+// 23. Sum of nodes on the longest path from root to leaf of a tree
+//                                      depth, sum
+pair<int, int> sopHelper(Node* root, pair<int, int> info) {
+    // Base Case
+    if (!root) return info;
+    
+    // Recursive Case: Get longest depth and its sum from left and right subtrees
+    auto leftPath = sopHelper(root -> left, {info.first + 1, info.second + root -> data});
+    auto rightPath = sopHelper(root -> right, {info.first + 1, info.second + root -> data});
+    
+    // If left path is longer then leftPath will be returned
+    if (leftPath.first > rightPath.first) 
+        return leftPath;
+    // If left and right path are of equal length and leftSum is greater than leftPath will be considered
+    else if (leftPath.first == rightPath.first && leftPath.second > rightPath.second)
+        return leftPath;
+    // Else right path will be considered
+    else 
+        return rightPath;
+    
+}    
+        
+
+int sumOfLongRootToLeafPath(Node *root) {
+    //code here
+    return sopHelper(root, {0, 0}).second;
+}
 
 
-// 24.
+// 24. Burning Tree
+void buildParentMap(Node* cNode, Node* pNode, unordered_map<Node*, Node*> &parent, int &target, Node* &startNode) {
+    // Base Case
+    if (!cNode) return ;
+    
+    // Ek Case: Add parent entry of current node
+    parent[cNode] = pNode;
+    
+    // Secondary Task: Find the starting node to burn the tree
+    if (cNode -> data == target) startNode = cNode;
+    
+    // Recursive Case: Traverse rest of the tree
+    buildParentMap(cNode -> left, cNode, parent, target, startNode);
+    buildParentMap(cNode -> right, cNode, parent, target, startNode);
+}
+
+int minTime(Node* root, int target) {
+    // Variable to hold starting node to burn the tree
+    Node* startNode = NULL;
+    
+    // Get parents of each node in the tree
+    unordered_map<Node*, Node*> parent;
+    buildParentMap(root, NULL, parent, target, startNode);
+    
+    // Use a queue to burn the tree
+    //      second, node burnt at second
+    queue<pair<int, Node*>> q;
+    int minSecond = 0;
+    
+    // Burn the start node at 0th second
+    q.push({0, startNode});
+    // Keep track of nodes that were burnt
+    unordered_map<Node*, bool> isBurnt;
+    
+    // Burn the rest of the tree by spreading the fire on parent, left and right child
+    while (!q.empty()) {
+        // Remove burnt item out of the tree
+        auto burntItem = q.front(); q.pop();
+        int currSecond = burntItem.first;
+        Node* currNode = burntItem.second;
+        
+        // Mark popped node as burnt
+        isBurnt[currNode] = 1;
+        // Update the latest seconds taken
+        minSecond = currSecond;
+        
+        // Burn parent
+        if (parent[currNode] && !isBurnt[parent[currNode]]) q.push({currSecond + 1, parent[currNode]});
+        // Burn left and right children
+        if (currNode -> left && !isBurnt[currNode -> left]) q.push({currSecond + 1, currNode -> left});
+        if (currNode -> right && !isBurnt[currNode -> right]) q.push({currSecond + 1, currNode -> right});
+    }
+    
+    return minSecond;
+}
 
 
 // 25.
