@@ -1,6 +1,8 @@
 #include <iostream>
 #include <queue>
 #include <unordered_map>
+#include <map>
+#include <string>
 using namespace std;
 
 struct TreeNode {
@@ -165,10 +167,59 @@ int minTime(Node* root, int target) {
 }
 
 
-// 25.
+// 25. Find Duplicate Subtrees
+string preOrderTraversal(TreeNode* root, vector<TreeNode*> &ans, map<string, int> &pots) {
+    // Base Case
+    if (!root) return "N";
+
+    // Ek Case: Use current node for preorder
+    string currNode = to_string(root -> val);
+
+    // Recursive Case: Traverse left and right subtrees
+    string leftTree = preOrderTraversal(root -> left, ans, pots);
+    string rightTree = preOrderTraversal(root -> right, ans, pots);
+
+    // Form current answer
+    string currentPOT = currNode + " " + leftTree + " " + rightTree;
+
+    // Check if current answer is in preorder traversal map already (adding node only when count is 1 to avoid duplicates in answer)
+    if (pots[currentPOT] == 1) ans.push_back(root);
+
+    // Add current preorder traversal count in map
+    pots[currentPOT]++;
+
+    return currentPOT;
+}
+
+vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+    vector<TreeNode*> ans;                  // Store root nodes
+    map<string, int> pots;                  // Store preorder traversals of each node
+    preOrderTraversal(root, ans, pots);     // Traverse tree to find answers
+    return ans;
+}
 
 
-// 26.
+// 26. Maximum path sum
+int maxPathHelper(TreeNode* root, int &ans) {
+    // Base Case
+    if (!root) return 0;
+
+    // Ek Case
+    // Only considering left and right sum if greater than 0 or else they only reduce path sum
+    int leftSum = max(0, maxPathHelper(root -> left, ans));
+    int rightSum = max(0, maxPathHelper(root -> right, ans));
+
+    // Getting max answer by including current node in path
+    ans = max(ans, root -> val + leftSum + rightSum);
+    // Returning only the max from left and right means returning the max sum path for the above nodes when backtracking from recursion
+    return root -> val + max(leftSum, rightSum);
+}
+
+int maxPathSum(TreeNode* root) {
+    int ans = INT_MIN;
+    maxPathHelper(root, ans);
+    return ans;
+}
 
 
 
