@@ -95,11 +95,60 @@ bool findTarget(TreeNode* root, int k) {
 }
 
 
-// 9. 
+// 9. Convert Binary Tree into sorted Doubly Linked List
+void convertBSTintoSortedDLL(TreeNode* root, TreeNode* &head) {
+    /*
+        Basic idea is to convert the right subtree first then connect the right head with the current root like in a DLL
+        Then update the head to be the current root for the left subtree
+        Then convert the left subtree to DLL which will then use the current root as the head and connect all nodes recursively
+    */
+    // Base Case: In Case of no root do nothing
+    if (!root) return ;
+
+    // Ek Case: Build Linked List from the right subtree first
+    convertBSTintoSortedDLL(root -> right, head);
+
+    // Attach root to the right head and vice versa
+    root -> right = head;
+    if (head) head -> left = root;
+
+    // Update head to the current root for our left subtree
+    head = root;
+
+    // Convert left subtree into Sorted DLL
+    convertBSTintoSortedDLL(root -> left, head);
+}
 
 
-// 10.
+// 10. Convert Sorted Doubly Linked List into BST
+TreeNode* convertSortedDLLintoBST(TreeNode* head, int n) {
+    /*
+        Here, using Recursion we are dividing the List into 3 parts, e.g. List has 8 nodes {1, 2, 3, 4, 5, 6, 7, 8}
+        Left Subtree will have n - 1 - n / 2 = n/2 - 1 = 3 nodes in above e.g. i.e. 1 to 3
+        Root will be the 4th node i.e. 4
+        Right subtree will have n/2 nodes i.e 4 nodes which is 5 to 8
+        After processing each head we move it to right
+    */
 
+    // Base Case
+    if (n <= 0 || head == NULL) return NULL;
+
+    // Ek Case
+  
+    // Get left subtree by reducing the size of DLL to just before center node
+    TreeNode* leftSubtree = convertSortedDLLintoBST(head, n - 1 - n / 2);
+
+    // Process root node
+    TreeNode* root = head;
+    root -> left = leftSubtree;
+
+    // Move head right to process the next node
+    head = head -> right;
+
+    // Get right subtree
+    TreeNode* rightSubtree = convertSortedDLLintoBST(head, n / 2);
+    return root;
+}
 
 
 int main() {
