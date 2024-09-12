@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <limits.h>
+#include <unordered_map>
 using namespace std;
 
 struct Node {
@@ -166,13 +167,74 @@ TreeNode* bstFromPreorderRec(vector<int>& preorder) {
 }
 
 
-// 13.
+// 13. Brothers from different roots
+void traverse(Node* root, unordered_map<int, int> &mp, bool mode, int &ans, int &x) {
+    // Base Case
+    if (!root) return ;
+    // Ek Case
+    // If mode is true, means we are mapping root1 nodes
+    if (mode) {
+        mp[root -> data]++;
+    }
+    /* If mode is false, means we are searching for pair 
+    of int for root2 if it exists in root1 such that their sum is x*/
+    else {
+        if (mp[x - root -> data] >= 1) ans++;
+    }
+    traverse(root -> left, mp, mode, ans, x);
+    traverse(root -> right, mp, mode, ans, x);
+}
+
+int countPairs(Node* root1, Node* root2, int x)
+{
+    int ans = 0;
+    unordered_map<int, int> treeMp;
+    traverse(root1, treeMp, true, ans, x);
+    traverse(root2, treeMp, false, ans, x);
+    return ans;
+}
 
 
-// 14.
+// 14. Convert BST into Balanced BST
+void getInorder(TreeNode* root, vector<int>& inorder) {
+    if (!root) return ;
+    getInorder(root -> left, inorder);
+    inorder.push_back(root -> val);
+    getInorder(root -> right, inorder);
+}
+
+TreeNode* balancedBSTHelper(vector<int>& inorder, int &i, int n) {
+    /*
+        i => index of current root
+        n => no. of nodes in tree
+    */
+    // Base Case
+    if (i >= inorder.size() || n <= 0) return NULL;
+    // Ek Case
+    // Build left subtree
+    TreeNode* leftSubtree = balancedBSTHelper(inorder, i, n/2);
+    // Build root node
+    TreeNode* root = new TreeNode(inorder[i++]);
+    root -> left = leftSubtree;
+    // Build right subtree
+    root -> right = balancedBSTHelper(inorder, i, n - n/2 - 1);
+
+    return root; 
+}
+
+TreeNode* balanceBST(TreeNode* root) {
+    // 1. Get inorder traversal of BST
+    vector<int> inorder;
+    getInorder(root, inorder);
+
+    // 2. Reconstruct BST using inorder
+    int i = 0;
+    int n = inorder.size();
+    return balancedBSTHelper(inorder, i, n);
+}
 
 
-// 15.
+// 15. 
 
 
 int main() {
