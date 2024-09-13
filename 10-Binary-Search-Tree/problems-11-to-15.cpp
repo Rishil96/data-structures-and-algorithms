@@ -234,7 +234,31 @@ TreeNode* balanceBST(TreeNode* root) {
 }
 
 
-// 15. 
+// 15. Median of a BST
+void traverse(struct Node *root, vector<int> &inorder) {
+    // Base Case
+    if (!root) return ;
+    // Ek Case
+    traverse(root -> left, inorder);
+    inorder.push_back(root -> data);
+    traverse(root -> right, inorder);
+}
+
+float findMedian(struct Node *root) {
+    vector<int> inorder;
+    traverse(root, inorder);
+    
+    float ans;
+    int size = inorder.size() - 1;
+    if (size + 1 & 1) {
+        ans = inorder[size/2];
+    }
+    else {
+        ans = (float(inorder[size/2]) + float(inorder[size/2 + 1])) / 2;
+    }
+    
+    return ans;
+}
 
 
 int main() {
