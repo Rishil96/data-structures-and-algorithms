@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 struct Node {
@@ -91,10 +92,82 @@ void flatten(TreeNode* root) {
 }
 
 
-// 19. 
+// 19. Replace every element with the least greater element on its right
+void insertNode(struct Node* root, int &val, int &currSuccessor) {
+    // Base Case
+    if (!root) return ;
+    
+    // Ek Case
+    // If current root is greater than val, it could be successor so mark it
+    if (root -> data > val) {
+        currSuccessor = root -> data;
+        if (root -> left) insertNode(root -> left, val, currSuccessor);
+        else {
+            Node* newNode = new Node();
+            newNode -> data = val;
+            root -> left = newNode;
+        }
+    }
+    // Else if current node is less than val, it cannot be successor
+    else {
+        if (root -> right) insertNode(root -> right, val, currSuccessor);
+        else {
+            Node* newNode = new Node();
+            newNode -> data = val;
+            root -> right = newNode;
+        }
+    }
+}
+
+vector<int> findLeastGreater(vector<int>& arr, int n) {
+    // Answer array
+    vector<int> ans(arr.size(), 0);
+    // Create root node of last element in array and add answer as -1
+    Node* root = new Node();
+    root -> data = arr[n-1]; 
+    ans[n-1] = -1;  // Because no nodes to the right of element at n-1
+    
+    /* 
+    Loop through remaining elements from right to left and find inorder
+    successor of each node as its the least greater element of current node
+    */
+    for (int i=n-2; i>=0; i--) {
+        int currSuccessor = -1;
+        insertNode(root, arr[i], currSuccessor);
+        ans[i] = currSuccessor;
+    }
+    
+    return ans;
+}
 
 
-// 20.
+// 20. Check if preorder traversal is a valid BST preorder
+void build(int arr[], int &i, int &N, int &min, int &max) {
+    // Base Case
+    if (i >= N) return ;
+    
+    // Ek Case: Mimic building a BST using preorder traversal
+    if (i < N && arr[i] > min && arr[i] < max) {
+        int root = arr[i];
+        i++;
+        build(arr, i, N, min, root);
+        build(arr, i, N, root, max);
+    }
+    
+    return ;
+}
+
+int canRepresentBST(int arr[], int N) {
+    // code here
+    int min = INT_MIN;
+    int max = INT_MAX;
+    int i = 0;
+    
+    // If i goes beyond arr index it means whole BST was created using preorder so preorder is valid else not valid
+    build(arr, i, N, min, max);
+    
+    return i >= N;
+}
 
 
 
