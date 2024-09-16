@@ -2,6 +2,7 @@
 #include <vector>
 #include <limits.h>
 #include <unordered_map>
+#include <stack>
 using namespace std;
 
 struct Node {
@@ -191,6 +192,66 @@ int countPairs(Node* root1, Node* root2, int x)
     unordered_map<int, int> treeMp;
     traverse(root1, treeMp, true, ans, x);
     traverse(root2, treeMp, false, ans, x);
+    return ans;
+}
+
+// Inorder traversal using Stack to solve 13
+int countPairs(Node* root1, Node* root2, int x) {
+    /*
+        1. Create 2 stacks
+        stack1 will store inorder traversal of root1
+        stack2 will store reverse inorder traversal of root2
+    */
+    int ans = 0;
+    stack<Node*> st1, st2;
+    
+    Node* temp1 = root1;
+    Node* temp2 = root2;
+
+    while (true) {
+
+        // While temp1 is a node add it and go left for BST1
+        while (temp1) {
+            // Inorder Traversal
+            st1.push(temp1);
+            temp1 = temp1 -> left;
+        }
+        
+        // While temp2 is a node add it and go right for BST2
+        while (temp2) {
+            // Reverse Inorder Traversal
+            st2.push(temp2);
+            temp2 = temp2 -> right;
+        }
+        
+        if (st1.empty() || st2.empty()) break;
+        
+        // 3. Get top elements to find brothers
+        Node* curr1 = st1.top();
+        Node* curr2 = st2.top();
+        
+        // 4. Finally check if curr 2 nodes are brothers
+        int sum = curr1 -> data + curr2 -> data;
+        // If nodes are brothers remove both nodes from stack and add their unvisited children
+        if (sum == x) {
+            ans++;
+            st1.pop();
+            st2.pop();
+            temp1 = curr1 -> right;
+            temp2 = curr2 -> left;
+        }
+        // If sum is less than x, remove node of BST1 and go right to get higher sum
+        else if (sum < x) {
+            st1.pop();
+            temp1 = curr1 -> right;
+        }
+        // If sum is greater than x, remove node of BST2 and go left to get lower sum
+        else {
+            st2.pop();
+            temp2 = curr2 -> left;
+        }
+    }
+    
     return ans;
 }
 
