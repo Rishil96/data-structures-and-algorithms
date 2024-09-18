@@ -14,6 +14,15 @@ struct Node {
     }
 };
 
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 
 // 1. Kth largest element in the array
 int findKthLargest(vector<int>& nums, int k) {
@@ -113,10 +122,35 @@ bool isHeap(struct Node* tree) {
 }
 
 
-// 4.
+// 4. Is Binary Tree a Complete Binary Tree
+bool isCompleteTree2(TreeNode* root) {
+    
+    // Level order traversal using queue
+    queue<TreeNode*> q;
+    q.push(root);
+    // Variable to keep track if null found
+    bool nullFound = false;
 
+    while (!q.empty()) {
+        TreeNode* frontNode = q.front(); q.pop();
+        // If null node found then mark true
+        if (!frontNode) {
+            nullFound = true;
+        }
+        // Else not null node case
+        else {
+            // If a null node was already found before current node it means its not a complete tree, return false
+            if (nullFound) return false;
+            // Push both children in queue
+            q.push(frontNode -> left);
+            q.push(frontNode -> right);
+        }
+    }
+    // If no valid nodes are found after a null node it means the tree is a complete BT
+    return true;
+}
 
-// 5.
+// 5. 
 
 
 
