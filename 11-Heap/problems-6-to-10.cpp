@@ -57,7 +57,80 @@ ListNode* mergeKLists(vector<ListNode*>& lists) {
 }
 
 
-// 7.
+// 7. Smallest Range in K list
+// Class to keep track of all the elements and their position in minHeap
+class Info
+{
+public:
+    int data;
+    int row;
+    int col;
+
+    Info(int data, int row, int col) {
+        this -> data = data;
+        this -> row = row;
+        this -> col = col;
+    }
+};
+
+
+// MinHeap comparator for Info class    
+class compare2
+{
+public:
+    bool operator()(Info* a, Info* b) {
+        return a -> data > b -> data;
+    }
+};
+
+vector<int> smallestRange(vector<vector<int>>& nums) {
+    // Step 1: Create min priority queue and variable to keep track of max and min elements
+    int maxElement = INT_MIN;
+    int minElement = INT_MAX;
+    priority_queue<Info*, vector<Info*>, compare2> minHeap;
+
+    // Step 2: Add first elements from each array
+    for (int i=0; i<nums.size(); i++) {
+        int element = nums[i][0];
+        int row = i;
+        int col = 0;
+        // Create info object about current element
+        Info* newElement = new Info(element, row, col);
+        minHeap.push(newElement);
+        // Update max and min elements
+        maxElement = max(maxElement, element);
+        minElement = min(minElement, element);
+    }
+
+    int ansStart = minElement;
+    int ansEnd = maxElement;
+    
+    // Step 3: Process remaining elements
+    while (!minHeap.empty()) {
+        Info* topElement = minHeap.top(); minHeap.pop();
+        // Update minElement and check if range has reduced
+        minElement = topElement -> data;
+        if (maxElement - minElement < ansEnd - ansStart) {
+            ansStart = minElement;
+            ansEnd = maxElement;
+        }
+
+        // Insert new element from current row array if it exists
+        if (topElement -> col + 1 < nums[topElement -> row].size()) {
+            int element = nums[topElement -> row][topElement -> col + 1];
+            // Update max element
+            maxElement = max(element, maxElement);
+            Info* newElement = new Info(element, topElement -> row, topElement -> col + 1);
+            minHeap.push(newElement);
+        }
+        // If the given array has no more new elements then break as it will go out of range
+        else {
+            break;
+        }
+    } 
+
+    return vector<int> {ansStart, ansEnd};
+}   
 
 
 // 8. Remove stones to minimize the total

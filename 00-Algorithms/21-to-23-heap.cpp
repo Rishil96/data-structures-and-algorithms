@@ -48,17 +48,17 @@ class Heap
                 int largestIndex = index;
 
                 // Compare with left and right child and get the largest element
-                if (leftIndex < size && arr[largest] < arr[leftIndex]) {
-                    largest = leftIndex;
+                if (leftIndex < size && arr[largestIndex] < arr[leftIndex]) {
+                    largestIndex = leftIndex;
                 }
 
-                if (rightIndex < size && arr[largest] < arr[rightIndex]) {
-                    largest = rightIndex;
+                if (rightIndex < size && arr[largestIndex] < arr[rightIndex]) {
+                    largestIndex = rightIndex;
                 }
 
-                if (index == largest) break;
-                swap(arr[index], arr[largest]);
-                index = largest;
+                if (index == largestIndex) break;
+                swap(arr[index], arr[largestIndex]);
+                index = largestIndex;
             }
 
             return node;
