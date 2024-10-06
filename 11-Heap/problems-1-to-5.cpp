@@ -150,7 +150,12 @@ bool isCompleteTree2(TreeNode* root) {
     return true;
 }
 
-// 5. 
+// 5. Convert a given Tree (Complete Binary Tree and Binary Search Tree) into a valid Heap.
+/*
+    1. Convert the tree into inorder traversal to get it in sorted format
+    2. Now to create a minheap loop start placing the inorder elements on tree using preorder traversal.
+    3. To create maxheap simply go from right to left on inorder array.
+*/
 
 
 

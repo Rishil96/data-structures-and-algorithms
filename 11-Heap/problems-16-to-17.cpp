@@ -89,7 +89,56 @@ long long minimumDifference(vector<int>& nums) {
 
 
 // 17. Minimum number of refuelling stops
+int minRefuelStops(int target, int startFuel, vector<vector<int>>& stations) {
+    // MaxHeap to hold fuels of each station passed
+    priority_queue<int> maxHeap;
 
+    int currPosition = 0;
+    int refuels = 0;
+
+    // Loop through all stations
+    for (int i=0; i<stations.size(); i++) {
+        // Base Case
+        if (currPosition >= target) return refuels;
+
+        // Current station details
+        int stationPosition = stations[i][0];
+        int availableFuel = stations[i][1];
+
+        int distanceToTravel = stationPosition - currPosition;
+        
+        // Refuel till we have enough fuel to reach current station
+        while (!maxHeap.empty() && startFuel < distanceToTravel) {
+            startFuel += maxHeap.top();
+            maxHeap.pop();
+            refuels++;
+        }
+
+        // Recheck if we have enough fuel
+        if (startFuel >= distanceToTravel) {
+            startFuel -= distanceToTravel;
+            currPosition += distanceToTravel;
+        }
+        else {
+            return -1;
+        }
+
+        // Add current station fuel in heap for later use
+        maxHeap.push(availableFuel);
+    }
+
+    // Attempt to reach target with remaining fuel
+    currPosition += startFuel;
+
+    while (!maxHeap.empty()) {
+        if (target <= currPosition) return refuels;
+        refuels++;
+        currPosition += maxHeap.top();
+        maxHeap.pop();
+    }
+
+    return target <= currPosition ? refuels : -1;
+}
 
 
 int main() {
