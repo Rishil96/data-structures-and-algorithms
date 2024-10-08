@@ -1,5 +1,20 @@
 #include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <map>
 using namespace std;
+
+struct Node
+{
+    int data;
+    struct Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+
+};
 
 class TrieNode
 {
@@ -114,10 +129,53 @@ void searchResults(TrieNode* root, string key) {
 }
 
 
-// 4.
+// 4. Array subset of another array
+bool arrSubset(vector<int> arr1, vector<int> arr2) {
+    // Step 1: Create a map consisting of all elements of arr2
+    unordered_map<int, bool> mp;
+    for (auto num: arr2) mp[num] = 1;
+
+    // Step 2: Check all elements of arr1 if its present in map
+    for (auto num: arr1) {
+        if (!mp[num]) return false;
+    }
+
+    return true;
+}
 
 
-// 5.
+// 5. Union of 2 linked list
+struct Node* makeUnion(struct Node* head1, struct Node* head2) {
+    // Step 1: Create map and store all values
+    map<int, bool> mp;
+    while (head1) {
+        mp[head1 -> data] = 1;
+        head1 = head1 -> next;
+    }
+    
+    while (head2) {
+        mp[head2 -> data] = 1;
+        head2 = head2 -> next;
+    }
+    
+    // Step 2: Build new sorted list
+    struct Node* head = NULL;
+    struct Node* tail = head;
+    
+    for (auto it: mp) {
+        int val = it.first;
+        if (!head) {
+            head = new struct Node(val);
+            tail = head;
+        }
+        else {
+            tail -> next = new struct Node(val);
+            tail = tail -> next;
+        }
+    }
+    
+    return head;
+}
 
 
 
@@ -146,6 +204,10 @@ int main() {
     cout << "Search results: ";
     searchResults(root, "bha");
     cout << endl;
+
+    cout << "Array Subset of another array: " << arrSubset(vector<int>{1, 2, 3}, vector<int>{1, 2, 3, 4, 5}) << endl;
+    cout << "Array Subset of another array: " << arrSubset(vector<int>{1, 2, 6}, vector<int>{1, 2, 3, 4, 5}) << endl;
+    cout << "Array Subset of another array: " << arrSubset(vector<int>{1}, vector<int>{1, 2, 3}) << endl;
 
     return 0;
 }
