@@ -9,6 +9,22 @@ struct ListNode {
     ListNode(int x) : val(x), next(NULL) {}
 };
 
+class TrieNode
+{
+public:
+    char data;
+    TrieNode* children[26];
+    bool isTerminal;
+
+    TrieNode(char _data) {
+        this -> data = _data;
+        for (int i=0; i<26; i++) {
+            this -> children[i] = NULL;
+        }
+        this -> isTerminal = false;
+    }
+};
+
 
 // 6. Intersection of 2 lists
 ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
@@ -109,7 +125,86 @@ int maxLen(int arr[], int N)
 }
 
 
-// 10.
+// 10. Replace Words
+void insertWord(TrieNode* root, string word) {
+    // Base Case
+    if (word.size() == 0) {
+        root -> isTerminal = true;
+        return ;
+    }
+
+    // Ek Case
+    char currChar = word[0];
+    int index = currChar - 'a';
+
+    TrieNode* child = NULL;
+    if (root -> children[index]) {
+        child = root -> children[index];
+    }
+    else {
+        child = new TrieNode(currChar);
+        root -> children[index] = child;
+    }
+
+    // Baaki Recursion
+    insertWord(child, word.substr(1));
+    return ;
+}
+
+string getRoot(string &word, TrieNode* root) {
+    string answer;
+    bool isRoot = false;
+    TrieNode* temp = root;
+    for (int i=0; i<word.size(); i++) {
+        char currChar = word[i];
+        int index = currChar - 'a';
+
+        if (temp -> children[index]) {
+            temp = temp -> children[index];
+            answer += currChar;
+            if (temp -> isTerminal) {
+                isRoot = true;
+                break;
+            }
+        }
+        else break;
+    }
+
+    return isRoot ? answer : word;
+}
+
+string replaceWords(vector<string>& dictionary, string sentence) {
+    // Step 1: Build a Trie Data structure using dictionary
+    TrieNode* root = new TrieNode('-');
+    for (auto word: dictionary) {
+        insertWord(root, word);
+    }
+
+    // Step 2: Split the words in sentence
+    vector<string> words;
+    string temp;
+
+    for (int i=0; i<sentence.size(); i++) {
+        if (sentence[i] == ' ') {
+            words.push_back(temp);
+            temp.clear();
+        }
+        else {
+            temp += sentence[i];
+            if (i == sentence.size() - 1) words.push_back(temp);
+        }
+    }
+
+    // Step 3: Using all words build answer
+    string ans;
+    for (auto word: words) {
+        string rootWord = getRoot(word, root);
+        ans += rootWord + " ";
+    }
+    // Remove extra space from the end
+    ans.pop_back();
+    return ans;
+}
 
 
 
