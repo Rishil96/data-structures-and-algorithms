@@ -83,7 +83,96 @@ int coinChange(vector<int>& coins, int amount) {
 }
 
 
-// 2.
+// 2. House Robber
+int robRec(vector<int>& nums, int i) {
+    // Base Case
+    if (i >= nums.size()) return 0;
+
+    // Ek Case
+    // Rob
+    int include = robRec(nums, i + 2) + nums[i];
+    // Don't Rob
+    int exclude = robRec(nums, i + 1) + 0;
+
+    return max(include, exclude);
+}
+
+int robMem(vector<int>& nums, int i, vector<int>& dp) {
+    // Base Case
+    if (i == 0) return nums[i];
+    if (i < 0) return 0;
+
+    // DP Case
+    if (dp[i] != -1) return dp[i];
+
+    // Ek Case
+    int include = robMem(nums, i - 2, dp) + nums[i];
+    int exclude = robMem(nums, i - 1, dp) + 0;
+
+    dp[i] = max(include, exclude);
+    return dp[i];
+}
+
+int robTab(vector<int>& nums) {
+    // Step 1: Create DP Array
+    vector<int> dp(nums.size() + 1, 0);
+
+    // Step 2: Add base case from Recursion
+    dp[0] = nums[0];
+
+    // Step 3: Bottom Up Approach
+    for (int i=1; i<nums.size(); i++) {
+        int include = nums[i];
+        if (i - 2 >= 0)
+            include += dp[i - 2];
+        int exclude = dp[i - 1] + 0;
+
+        dp[i] = max(include, exclude);
+    }
+
+    return dp[nums.size()-1];
+} 
+
+int robSO(vector<int>& nums) {
+    // Step 1: Create variables for storing past data
+    int prev2 = 0;
+    int prev1 = 0;
+
+    // Step 2: Loop through houses for robbery
+    for (int i=0; i<nums.size(); i++) {
+        int include = nums[i] + prev2;
+        int exclude = prev1;
+
+        int currAns = max(include, exclude);
+
+        // Update variables
+        prev2 = prev1;
+        prev1 = currAns;
+    }
+
+    return prev1;
+}
+
+int rob(vector<int>& nums) {
+    // Recursion Solution
+    /*
+    return robRec(nums, 0);
+    */
+
+    // Memoization Solution
+    /*
+    vector<int> dp(nums.size(), -1);
+    return robMem(nums, nums.size()-1, dp);
+    */
+
+    // Tabulation Solution
+    /*
+    return robTab(nums);
+    */
+
+    // Space Optimization Solution
+    return robSO(nums);
+}
 
 
 // 3.
