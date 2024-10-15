@@ -175,10 +175,56 @@ int rob(vector<int>& nums) {
 }
 
 
-// 3.
+// 3. House Robber 2
+int rob2Rec(vector<int>& nums, int i, int n) {
+    // Base Case
+    if (i > n) return 0;
+
+    // Ek Case
+    int include = rob2Rec(nums, i + 2, n) + nums[i];
+    int exclude = rob2Rec(nums, i + 1, n) + 0;
+
+    return max(include, exclude);
+}
+
+int rob2Mem(vector<int>& nums, int i, int &n, vector<vector<int>> &dp) {
+    // Base Case
+    if (i > n) return 0;
+
+    // Dp Case
+    if (dp[i][n] != -1) return dp[i][n];
+
+    // Ek Case
+    int include = rob2Mem(nums, i + 2, n, dp) + nums[i];
+    int exclude = rob2Mem(nums, i + 1, n, dp) + 0;
+
+    dp[i][n] = max(include, exclude);
+    return dp[i][n];
+}
+
+int rob(vector<int>& nums) {
+    int n = nums.size() - 1;
+    // Recursion Approach
+    /*
+    int rob1 = rob2Rec(nums, 1, n);
+    n--;
+    int rob2 = rob2Rec(nums, 0, n);
+    return max(rob1, rob2);
+    */
+
+    // Memoization Approach
+    if (nums.size() == 1) return nums[0];
+
+    vector<vector<int>> dp(n + 2, vector<int>(n + 2, -1));
+    int rob1 = rob2Mem(nums, 1, n, dp);
+    // dp.clear();
+    n--;
+    int rob2 = rob2Mem(nums, 0, n, dp);
+    return max(rob1, rob2);
+}
 
 
-// 4.
+// 4. 
 
 
 // 5.
