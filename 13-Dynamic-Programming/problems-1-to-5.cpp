@@ -202,7 +202,7 @@ int rob2Mem(vector<int>& nums, int i, int &n, vector<vector<int>> &dp) {
     return dp[i][n];
 }
 
-int rob(vector<int>& nums) {
+int rob2(vector<int>& nums) {
     int n = nums.size() - 1;
     // Recursion Approach
     /*
@@ -224,7 +224,122 @@ int rob(vector<int>& nums) {
 }
 
 
-// 4. 
+// 4. Painting Fences
+const long long MOD = 1000000007; 
+
+long long paintRec(int &n, int &k) {
+    /*
+        Base Case 1: 
+            For 1 fence, there are k different colors using which we can paint it
+    */
+    if (n == 1) return k;
+    /*
+        Base Case 2: 
+            For 2 fences, there are 2 possibilites:-
+            Both fences are painted with same color and both fences are painted with different colors
+            Same Color: k different ways e.g. ( if k = 3 and n = 2 the ways are -> RR GG BB <-)
+            Different Color: k * (k - 1) ways e.g. (if k = 3 (RGB) and n = 2, the diff ways are -> RG RB BG BR GR GB <-)
+            So, adding up same and different color ways will give us the total number of ways to paint 2 fences
+    */ 
+    if (n == 2) return k + (k * (k - 1));
+
+    /*
+        Recursive Case:
+            Find previous 2 recursive solutions to build the current solution i.e. n - 2 and n - 1
+    */
+    n -= 2;
+    long long ans1 = paintRec(n, k);
+    n += 2;
+
+    n -= 1;
+    long long ans2 = paintRec(n, k);
+    n += 1;
+
+    /*
+        Main Case:
+            Formula to calculate different ways to paint n fences using previous 2 solutions.
+    */
+    long long finalAns = ((ans1 + ans2) * (k - 1)) % MOD;
+    return finalAns;
+}
+
+long long paintMem(int &n, int &k, vector<int>& dp) {
+    // Base Case
+    if (n == 1) return k;
+    if (n == 2) return k + (k * (k - 1));
+
+    // DP Case
+    if (dp[n] != -1) return dp[n];
+
+    // Recursive Case
+    n -= 2;
+    long long ans1 = paintMem(n, k, dp);
+    n += 2;
+    
+    n -= 1;
+    long long ans2 = paintMem(n, k, dp);
+    n += 1;
+
+    dp[n] = ((ans1 + ans2) * (k - 1)) % MOD;
+    return dp[n]; 
+}
+
+long long paintTab(int &n, int &k) {
+    // Step 1: Create DP Array
+    vector<int> dp(n + 1, 0);
+    // Step 2: Add base cases from Memoization in DP Array
+    dp[1] = k;
+    dp[2] = k + (k * (k - 1));
+
+    // Step 3: Bottom up loop
+    for (int i=3; i<=n; i++) {
+        // In this loop, i is mimicking n from Recursion
+        long long ans1 = dp[i - 2];
+        long long ans2 = dp[i - 1];
+        long long finalAns = ((ans1 + ans2) * (k - 1)) % MOD;
+        dp[i] = finalAns;
+    }
+
+    return dp[n];
+}
+
+long long paintSO(int &n, int &k) {
+    // Step 1: Create variables
+    long long prev2 = k;
+    long long prev1 = k + (k * (k - 1));
+
+    // Step 2: Start bottom up loop
+    for (int i=3; i<=n; i++) {
+        long long currAns = ((prev2 + prev1) * (k - 1)) % MOD;
+        // Update variables for the next iteration
+        prev2 = prev1;
+        prev1 = currAns;
+    }
+
+    return prev1;
+}
+
+long long countWays(int n, int k){
+    
+    // Recursion
+    /*
+    return paintRec(n, k);
+    */
+
+    // Memoization
+    /*
+    vector<int> dp(n + 1, -1);
+    return paintMem(n, k, dp);
+    */
+
+    // Tabulation
+    /*
+    return paintTab(n, k);
+    */
+
+    // Space Optimization
+    return paintSO(n, k);
+}
 
 
 // 5.
@@ -232,7 +347,21 @@ int rob(vector<int>& nums) {
 
 
 int main() {
+    int n1 = 3, k1 = 2;
+    int n2 = 2, k2 = 4;
+    cout << "Paint Fences Recursion n = 3, k = 2: " << paintRec(n1, k1) << endl;
+    cout << "Paint Fences Recursion n = 2, k = 4: " << paintRec(n2, k2) << endl;
     
+    vector<int> dp1(n1 + 1, -1);
+    vector<int> dp2(n2 + 1, -1);
+    cout << "\nPaint Fences Memoization n = 3, k = 2: " << paintMem(n1, k1, dp1) << endl;
+    cout << "Paint Fences Memoization n = 2, k = 4: " << paintMem(n2, k2, dp2) << endl;
+
+    cout << "\nPaint Fences Tabulation n = 3, k = 2: " << paintTab(n1, k1) << endl;
+    cout << "Paint Fences Tabulation n = 2, k = 4: " << paintTab(n2, k2) << endl;
+
+    cout << "\nPaint Fences Space Optimization n = 3, k = 2: " << paintSO(n1, k1) << endl;
+    cout << "Paint Fences Space Optimization n = 2, k = 4: " << paintSO(n2, k2) << endl;
 
     return 0;
 }
