@@ -342,7 +342,121 @@ long long countWays(int n, int k){
 }
 
 
-// 5.
+// 5. 0/1 Knapsack Problem
+int knapSackRec(int W, vector<int>& wt, vector<int>& val, int i) {
+    // Base Case
+    if (W <= 0 || i >= wt.size()) return 0;
+    
+    // Ek Case: Include and Exclude approach to take and not take each value weight combo
+    int include = 0;
+    if (wt[i] <= W) {
+        include = knapSackRec(W - wt[i], wt, val, i + 1) + val[i];
+    }
+    int exclude = knapSackRec(W, wt, val, i + 1) + 0;
+    
+    return max(include, exclude);
+}
+
+int knapSackMem(int W, vector<int>& wt, vector<int>& val, int i, vector<vector<int>> &dp) {
+    // Base Case
+    if (W <= 0 || i < 0) return 0;
+    
+    // DP Case
+    if (dp[i][W] != -1) return dp[i][W];
+    
+    // Ek Case
+    int include = 0;
+    if (W >= wt[i]) {
+        include = knapSackMem(W - wt[i], wt, val, i - 1, dp) + val[i];
+    }
+    
+    int exclude = knapSackMem(W, wt, val, i - 1, dp) + 0;
+    
+    dp[i][W] = max(include, exclude);
+    return dp[i][W];
+}
+
+int knapSackTab(int &W, vector<int>& wt, vector<int>& val) {
+    // Step 1: Create DP Array
+    int n = wt.size();
+    vector<vector<int>> dp(n + 1, vector<int>(W + 1, 0));
+
+    // Step 2: Add base case
+    for (int i=wt[0]; i<=W; i++) {
+        if (i <= W) dp[0][i] = val[0];
+    }
+    
+    // Step 3: Bottom up approach
+    for (int i=1; i<n; i++) {
+        for (int w=0; w<=W; w++) {
+            
+            int include = 0;
+            if (w >= wt[i]) {
+                include = dp[i - 1][w - wt[i]] + val[i];
+            }
+            
+            int exclude = dp[i - 1][w] + 0;
+            
+            dp[i][w] = max(include, exclude);
+        }
+    }
+    
+    return dp[n-1][W];
+}
+
+int knapSackSO(vector<int> &weights, vector<int> &values, int capacity) {
+    // Using 2 1D array to save space as we are only dependent on current and previous index values
+    // Step 1: Create optimized variables
+    vector<int> prev(capacity + 1, 0);
+    vector<int> curr(capacity + 1, 0);
+    int n = weights.size();
+
+    // Step 2: Add base case in prev
+    for (int currCapacity=0; currCapacity<=capacity; currCapacity++) {
+        if (currCapacity - weights[0] >= 0) prev[currCapacity] = values[0];
+    }
+
+    // Step 3: Bottom up approach
+    for (int index=1; index<n; index++) {
+        for (int currCapacity=0; currCapacity<=capacity; currCapacity++) {
+            int include = 0;
+            if (currCapacity - weights[index] >= 0) {
+                include = values[index] + prev[currCapacity - weights[index]];
+            }
+            int exclude = prev[currCapacity];
+
+            curr[currCapacity] = max(include, exclude);
+        }
+        // Yahi galti kiya tha (prev ko inner for loop me update karke)
+        // Pehele pura current vector banalo inner for loop me uske baad hi update karo 
+        prev = curr;
+    }
+
+    return prev[capacity];
+}
+
+// Function to return max value that can be put in knapsack of capacity W.
+int knapSack(int W, vector<int>& wt, vector<int>& val) {
+    
+    // Recursion Solution
+    /*
+    return knapSackRec(W, wt, val, 0);
+    */
+    
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(wt.size(), vector<int>(W + 1, -1));
+    return knapSackMem(W, wt, val, wt.size() - 1, dp);
+    */
+    
+    // Tabulation Solution
+    /*
+    return knapSackTab(W, wt, val);
+    */
+    
+    // Space Optimization Solution
+    return knapSackSO(wt, val, W);
+}
 
 
 
