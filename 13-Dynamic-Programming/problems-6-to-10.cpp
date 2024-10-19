@@ -138,7 +138,83 @@ bool canPartition(vector<int>& nums) {
 }
 
 
-// 7.
+// 7. Number of dice rolls to target sum
+int MOD = 1000000007;
+
+int nrttRec(int n, int &k, int target) {
+    // Base Case
+    if (n == 0 && target == 0) return 1;
+    if (n <= 0 || target < 0) return 0;
+
+    // Ek Case
+    int ways = 0;
+    for (int face=1; face<=k; face++) {
+        int currAns = nrttRec(n - 1, k, target - face);
+        ways += currAns;
+    }
+
+    return ways;
+}
+
+int nrttMem(int n, int &k, int target, vector<vector<int>> &dp) {
+    // Base Case
+    if (n == 0 && target == 0) return 1;
+    if (n <= 0 || target < 0) return 0;
+
+    // DP Case
+    if (dp[n][target] != -1) return dp[n][target];
+
+    // Ek Case
+    int ways = 0;
+    for (int face=1; face <=k; face++) {
+        int currAns = nrttMem(n - 1, k, target - face, dp) % MOD;
+        ways = (ways % MOD) + (currAns % MOD);
+        ways = ways % MOD;
+    }
+    return dp[n][target] = ways;
+}
+
+int nrttTab(int &n, int &k, int &target) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(n+1, vector<int>(target+1, 0));
+
+    // Step 2: Add base case in dp array
+    dp[0][0] = 1;
+    
+    // Step 3: Bottom up approach
+    for (int dice=1; dice<=n; dice++) {
+        for (int t=1; t<=target; t++) {
+            int ways = 0;
+            for (int face=1; face<=k; face++) {
+                int currAns = 0;
+                if (t - face >= 0)
+                    currAns = dp[dice - 1][t - face] % MOD;
+                ways = (ways % MOD) + (currAns % MOD);
+                ways = ways % MOD;
+            }
+            // Galti yahi hua: Har dice, target combination ke liye answers nikalne ke baad dp array update karna hai
+            dp[dice][t] = ways;
+        }
+    }
+
+    return dp[n][target];
+}
+
+int numRollsToTarget(int n, int k, int target) {
+    // Recursion Solution
+    /*
+    return nrttRec(n, k, target);
+    */
+    
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(n + 1, vector<int>(target + 1, -1));
+    return nrttMem(n, k, target, dp);
+    */
+
+    // Tabulation Solution
+    return nrttTab(n, k, target);
+}
 
 
 // 8.
