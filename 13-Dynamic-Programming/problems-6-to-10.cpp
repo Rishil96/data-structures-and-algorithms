@@ -217,7 +217,90 @@ int numRollsToTarget(int n, int k, int target) {
 }
 
 
-// 8.
+// 8. Guess number higher or lower
+int gmaRec(int low, int high) {
+    // Base Case
+    if (low >= high) return 0;
+
+    // Ek Case
+    int ans = INT_MAX;
+
+    // Loop through 1 and n to consider every number as a guess
+    for (int guess=low; guess<=high; guess++) {
+        // Suppose current guess is wrong, pay the penalty (guess amount) and look for correct guess in lower and higher range
+        int leftMeAnswer = gmaRec(low, guess - 1) + guess;
+        int rightMeAnswer = gmaRec(guess + 1, high) + guess;
+        // To make sure we have enough money to win the game, always take the larger amount paid as penalty
+        int currAns = max(leftMeAnswer, rightMeAnswer);
+
+        // Update answer to the minimum largest amount we have to pay to win the game
+        ans = min(ans, currAns);
+    } 
+
+    return ans;
+}
+
+int gmaMem(int low, int high, vector<vector<int>>& dp) {
+    // Base Case
+    if (low >= high) return 0;
+
+    // DP Case
+    if (dp[low][high] != -1) return dp[low][high];
+
+    // EK Case
+    int ans = INT_MAX;
+
+    for (int guess=low; guess<=high; guess++) {
+        int leftAns = gmaMem(low, guess - 1, dp) + guess;
+        int rightAns = gmaMem(guess + 1, high, dp) + guess;
+
+        int currAns = max(leftAns, rightAns);
+        ans = min(ans, currAns);
+    }
+
+    dp[low][high] = ans;
+    return ans;
+}
+
+int gmaTab(int &n) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(n + 2, vector<int>(n + 2, 0));
+    // Step 2: Base Case add kar
+    // Step 3: Bottom Up 
+    for (int low=n; low>=1; low--) {
+        for (int high=low + 1; high<=n; high++) {
+            int ans = INT_MAX;
+
+            for (int guess=low; guess<=high; guess++) {
+                int leftAns = dp[low][guess - 1] + guess;
+                int rightAns = dp[guess + 1][high] + guess;
+
+                int currAns = max(leftAns, rightAns);
+                ans = min(ans, currAns);
+            }
+
+            dp[low][high] = ans;
+        }
+    }
+
+    return dp[1][n];
+}
+
+int getMoneyAmount(int n) {
+    // Recursion Solution
+    /*
+    return gmaRec(1, n);
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
+    return gmaMem(1, n, dp);
+    */
+
+    // Tabulation Solution
+    return gmaTab(n);
+}
 
 
 // 9.
