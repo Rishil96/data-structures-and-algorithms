@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 using namespace std;
 
 
@@ -303,7 +304,122 @@ int getMoneyAmount(int n) {
 }
 
 
-// 9.
+// 9. Minimum Cost Tree from leaf values
+int mflRec(vector<int>& arr, map<pair<int, int>, int> &getElementInRange, int start, int end) {
+    // Base Case: For invalid range or leaf node we can't get max non-leaf node sum
+    if (start >= end) return 0;
+    
+    // Ek Case: Partition the array, when start, end is a valid range it is not a leaf node scenario
+    int ans = INT_MAX;
+    
+    for (int i=start; i<end; i++) {
+        // i is used for partitioning
+
+        // Calculate current node value i.e. product of max element from left and right side of partition index i
+        int currNodeVal = getElementInRange[{start, i}] * getElementInRange[{i + 1, end}];
+
+        // Solve for left subarray and right subarray
+        int leftAns = mflRec(arr, getElementInRange, start, i);
+        int rightAns = mflRec(arr, getElementInRange, i + 1, end);
+
+        // Update answer by adding all non-leaf node values
+        ans = min(ans, currNodeVal + leftAns + rightAns);
+    }
+
+    return ans;
+}
+
+int mflMem(vector<int>& arr, map<pair<int, int>, int> &getElementInRange, int start, int end, vector<vector<int>> &dp) {
+    // Base Case
+    if (start >= end) return 0;
+
+    // DP Case
+    if (dp[start][end] != -1) return dp[start][end];
+
+    // Ek Case
+    int ans = INT_MAX;
+    
+    for (int i=start; i<end; i++) {
+        // i is used for partitioning
+
+        // Calculate current node value i.e. product of max element from left and right side of partition index i
+        int currNodeVal = getElementInRange[{start, i}] * getElementInRange[{i + 1, end}];
+
+        // Solve for left subarray and right subarray
+        int leftAns = mflMem(arr, getElementInRange, start, i, dp);
+        int rightAns = mflMem(arr, getElementInRange, i + 1, end, dp);
+
+        // Update answer by adding all non-leaf node values
+        ans = min(ans, currNodeVal + leftAns + rightAns);
+    }
+
+    dp[start][end] = ans;
+    return ans;
+
+}
+
+int mflTab(vector<int>& arr, map<pair<int, int>, int> &getElementInRange) {
+    
+    int n = arr.size();
+
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+
+    // Step 2: Base Case add is not needed
+
+    // Step 3: Bottom up approach
+    for (int start=n-1; start>=0; start--) {
+        for (int end=0; end<n; end++) {
+            
+            if (start >= end) continue;
+            int ans = INT_MAX;
+            
+            for (int i=start; i<end; i++) {
+
+                int currNodeVal = getElementInRange[{start, i}] * getElementInRange[{i + 1, end}];
+                // Solve for left subarray and right subarray
+                int leftAns = dp[start][i];
+                int rightAns = dp[i + 1][end];
+
+                // Update answer by adding all non-leaf node values
+                ans = min(ans, currNodeVal + leftAns + rightAns);
+            }
+
+            dp[start][end] = ans;
+        }
+    }
+
+    return dp[0][n-1];
+}
+
+int mctFromLeafValues(vector<int>& arr) {
+    // Step 1. Calculate the maximum element of every subarray range
+    map<pair<int, int>, int> maxElementInRange;
+
+    for (int i=0; i<arr.size(); i++) {
+        // Maximum element in range (i, i) is arr[i]
+        maxElementInRange[{i, i}] = arr[i];
+
+        for (int j=i+1; j<arr.size(); j++) {
+            // Maximum element in range i to j will be the maximum between current element j and the previous range i to j - 1
+            maxElementInRange[{i, j}] = max(arr[j], maxElementInRange[{i, j-1}]);
+        }
+    }
+
+    // Recursion Solution
+    /*
+    return mflRec(arr, maxElementInRange, 0, arr.size()-1);
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(arr.size(), vector<int>(arr.size(), -1));
+    return mflMem(arr, maxElementInRange, 0, arr.size()-1, dp);
+    */
+
+    // Tabulation Solution
+    return mflTab(arr, maxElementInRange);
+}
 
 
 // 10.
