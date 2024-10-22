@@ -422,7 +422,134 @@ int mctFromLeafValues(vector<int>& arr) {
 }
 
 
-// 10.
+// 10. Longest Common Subsequence
+int lcsRec(string &text1, string &text2, int i, int j) {
+    // Base Case
+    if (i >= text1.size() || j >= text2.size()) return 0;
+
+    // Ek Case
+    // Both current characters match
+    int ans;
+    if (text1[i] == text2[j]) {
+        ans = lcsRec(text1, text2, i + 1, j + 1) + 1;
+    }
+    // If current characters don't match, then try moving index of each text once
+    else {
+        int ans1 = lcsRec(text1, text2, i + 1, j) + 0;
+        int ans2 = lcsRec(text1, text2, i, j + 1) + 0;
+
+        ans = max(ans1, ans2);
+    }
+
+    return ans;
+}
+
+int lcsMem(string &text1, string &text2, int i, int j, vector<vector<int>> &dp) {
+    // Base Case
+    if (i < 0 || j < 0) return 0;
+
+    // DP Case
+    if (dp[i][j] != -1) return dp[i][j];
+
+    // Ek Case
+    int ans;
+    if (text1[i] == text2[j]) {
+        ans = lcsMem(text1, text2, i-1, j-1, dp) + 1;
+    }
+    else {
+        int ans1 = lcsMem(text1, text2, i-1, j, dp) + 0;
+        int ans2 = lcsMem(text1, text2, i, j-1, dp) + 0;
+        ans = max(ans1, ans2);
+    }
+
+    dp[i][j] = ans;
+
+    return ans;
+}
+
+int lcsTab(string &text1, string &text2) {
+    // Step 1 : Create DP Array
+    vector<vector<int>> dp(text1.size() + 1, vector<int>(text2.size(), 0));
+    // Step 2 : Base Case Add kar (iss case me kuch add nahi karna)
+    // Step 3 : Bottom up jaa
+    for (int i=0; i<text1.size(); i++) {
+        for (int j=0; j<text2.size(); j++) {
+            int ans;
+            if (text1[i] == text2[j]) {
+                if (i - 1 >= 0 && j - 1 >= 0)
+                    ans = dp[i-1][j-1] + 1;
+                else ans = 1;
+            }
+            else {
+                int ans1 = 0;
+                if (i - 1 >= 0)
+                    ans1 = dp[i-1][j] + 0;
+                int ans2 = 0;
+                if (j - 1 >= 0)
+                    ans2 = dp[i][j-1] + 0;
+                ans = max(ans1, ans2);
+            }
+
+            dp[i][j] = ans;
+        }
+    }
+
+    return dp[text1.size() - 1][text2.size() - 1];
+}
+
+int lcsSO(string &text1, string &text2) {
+    // Step 1: Create variables
+    vector<int> curr(text1.size() + text2.size() + 1, 0);
+    vector<int> next(text1.size() + text2.size() + 1, 0);
+
+    // Step 2: Bottom Up
+    for (int i=0; i<text1.size(); i++) {
+        for (int j=0; j<text2.size(); j++) {
+            int ans;
+            if (text1[i] == text2[j]) {
+                if (i - 1 >= 0 && j - 1 >= 0)
+                    ans = curr[j-1] + 1;
+                else ans = 1;
+            }
+            else {
+                int ans1 = 0;
+                if (i - 1 >= 0)
+                    ans1 = curr[j] + 0;
+                int ans2 = 0;
+                if (j - 1 >= 0)
+                    ans2 = next[j-1] + 0;
+                ans = max(ans1, ans2);
+            }
+
+            next[j] = ans;
+        }
+
+        curr = next;
+    }
+
+    return curr[text2.size() - 1];
+}
+
+int longestCommonSubsequence(string text1, string text2) {
+    // Recursion Solution
+    /*
+    return lcsRec(text1, text2, 0, 0);        
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(text1.size() + 1, vector<int>(text2.size() + 1, -1));
+    return lcsMem(text1, text2, text1.size()-1, text2.size()-1, dp);
+    */
+
+    // Tabulation Solution
+    /*
+    return lcsTab(text1, text2);
+    */
+
+    // Space Optimization Solution
+    return lcsSO(text1, text2);
+}
 
 
 
