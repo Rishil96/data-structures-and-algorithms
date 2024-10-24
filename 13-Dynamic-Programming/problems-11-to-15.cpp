@@ -123,7 +123,118 @@ int longestPalindromeSubseq(string s) {
 }
 
 
-// 12.
+// 12. Edit Distance
+int mdRec(string &word1, string &word2, int i, int j) {
+    // Base Case
+    if (i >= word1.size() && j >= word2.size()) return 0;
+    if (i >= word1.size()) return word2.size() - j;
+    if (j >= word2.size()) return word1.size() - i;
+
+    // Ek Case
+
+    // Move ahead if current 2 characters on indexes match
+    int ans;
+    if (word1[i] == word2[j]) {
+        ans = mdRec(word1, word2, i+1, j+1);
+    }
+    // Else perform insert, replace, delete operations
+    else {
+        // Insert character in word2
+        int ans1 = mdRec(word1, word2, i, j + 1) + 1;
+        // Delete character in word1
+        int ans2 = mdRec(word1, word2, i + 1, j) + 1;
+        // Replace character in word2
+        int ans3 = mdRec(word1, word2, i + 1, j + 1) + 1;
+
+        ans = min(ans1, min(ans2, ans3));
+    }
+
+    return ans;
+}
+
+int mdMem(string &word1, string &word2, int i, int j, vector<vector<int>> &dp) {
+    // Base Case
+    if (i >= word1.size() && j >= word2.size()) return 0;
+    if (i >= word1.size()) return word2.size() - j;
+    if (j >= word2.size()) return word1.size() - i;
+
+    // DP Case
+    if (dp[i][j] != -1) return dp[i][j];
+
+    // Ek Case
+
+    // Move ahead if current 2 characters on indexes match
+    int ans;
+    if (word1[i] == word2[j]) {
+        ans = mdMem(word1, word2, i+1, j+1, dp);
+    }
+    // Else perform insert, replace, delete operations
+    else {
+        // Insert character in word2
+        int ans1 = mdMem(word1, word2, i, j + 1, dp) + 1;
+        // Delete character in word1
+        int ans2 = mdMem(word1, word2, i + 1, j, dp) + 1;
+        // Replace character in word2
+        int ans3 = mdMem(word1, word2, i + 1, j + 1, dp) + 1;
+
+        ans = min(ans1, min(ans2, ans3));
+    }
+
+    return dp[i][j] = ans;
+}
+
+int mdTab(string &word1, string &word2) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(word1.size() + 1, vector<int>(word2.size() + 1, 0));
+    // Step 2: Base Case
+    for (int i=0; i<dp.size(); i++) {
+        for (int j=0; j<dp[i].size(); j++) {
+            if (i >= word1.size()) dp[i][j] = word2.size() - j;
+            if (j >= word2.size()) dp[i][j] = word1.size() - i;
+        }
+    }
+
+    // Step 3: Bottom Up
+    for (int i=word1.size()-1; i>=0; i--) {
+        for (int j=word2.size()-1; j>=0; j--) {
+            int ans;
+            if (word1[i] == word2[j]) {
+                ans = dp[i+1][j+1];
+            }
+            // Else perform insert, replace, delete operations
+            else {
+                // Insert character in word2
+                int ans1 = dp[i][j + 1] + 1;
+                // Delete character in word1
+                int ans2 = dp[i + 1][j] + 1;
+                // Replace character in word2
+                int ans3 = dp[i + 1][j + 1] + 1;
+
+                ans = min(ans1, min(ans2, ans3));
+            }
+
+            dp[i][j] = ans;
+        }
+    }
+
+    return dp[0][0];
+}
+
+int minDistance(string word1, string word2) {
+    // Recursion Solution
+    /*
+    return mdRec(word1, word2, 0, 0);
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(word1.size(), vector<int>(word2.size(), -1));
+    return mdMem(word1, word2, 0, 0, dp);
+    */
+
+    // Tabulation Solution
+    return mdTab(word1, word2);
+}
 
 
 // 13.
