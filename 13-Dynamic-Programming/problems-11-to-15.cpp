@@ -237,7 +237,82 @@ int minDistance(string word1, string word2) {
 }
 
 
-// 13.
+// 13. Longest Increasing Subsequence
+int lisRec(vector<int>& nums, int currIndex, int prevIndex) {
+    /*
+    prevIndex: used to keep track of the last used index in the LIS
+    currIndex: used to check if current element at currIndex can be used in ongoing LIS
+    */
+    // Base Case
+    if (currIndex >= nums.size()) return 0;
+    // Ek Case
+    int include = 0;
+    
+    // Include case
+    if (prevIndex == -1 || nums[currIndex] > nums[prevIndex]) {
+        include = 1 + lisRec(nums, currIndex + 1, currIndex);
+    }
+    int exclude = 0 + lisRec(nums, currIndex + 1, prevIndex);
+
+    return max(include, exclude);
+}
+
+int lisMem(vector<int>& nums, int currIndex, int prevIndex, vector<vector<int>> &dp) {
+    // Base Case
+    if (currIndex >= nums.size()) return 0;
+
+    // DP Case
+    if (dp[currIndex][prevIndex + 1] != -1) return dp[currIndex][prevIndex + 1];
+
+    // Ek Case
+    int include = 0;
+    if (prevIndex == -1 || nums[currIndex] > nums[prevIndex]) {
+        include = 1 + lisMem(nums, currIndex + 1, currIndex, dp);
+    }
+
+    int exclude = 0 + lisMem(nums, currIndex + 1, prevIndex, dp);
+
+    dp[currIndex][prevIndex + 1] = max(include, exclude);
+    return dp[currIndex][prevIndex + 1];
+}
+
+int lisTab(vector<int>& nums) {
+    int n = nums.size();
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));
+    // Step 2: Base Case (nothing to add)
+    // Step 3: Bottom Up Approach
+    for (int curr=n-1; curr>=0; curr--) {
+        for (int prev=curr-1; prev>=-1; prev--) {
+            int include = 0;
+            if (prev == -1 || nums[curr] > nums[prev]) {
+                include = 1 + dp[curr+1][curr+1];
+            }
+
+            int exclude = dp[curr+1][prev+1];
+
+            dp[curr][prev+1] = max(include, exclude);
+        }
+    }
+
+    return dp[0][0];
+}
+
+int lengthOfLIS(vector<int>& nums) {
+    // Recursion Solution
+    /*
+    return lisRec(nums, 0, -1);
+    */
+    
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(nums.size() + 1, vector<int>(nums.size() + 1, -1));
+    return lisMem(nums, 0, -1, dp);
+    */
+    
+    // Tabulation Solution
+    return lisTab(nums);
+}
 
 
 // 14.
