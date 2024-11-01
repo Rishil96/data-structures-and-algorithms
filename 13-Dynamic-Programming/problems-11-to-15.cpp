@@ -298,6 +298,54 @@ int lisTab(vector<int>& nums) {
     return dp[0][0];
 }
 
+int lisSO(vector<int>& nums) {
+    int n = nums.size();
+    // Step 1: Create variables
+    vector<int> currRow(n + 1, 0);
+    vector<int> nextRow(n + 1, 0);
+
+    // Step 2: Bottom up
+    for (int curr=n-1; curr>=0; curr--) {
+        for (int prev=curr-1; prev>=-1; prev--) {
+            int include = 0;
+
+            if (prev == -1 || nums[curr] > nums[prev]) {
+                include = 1 + nextRow[curr+1];
+            }
+            int exclude = 0 + nextRow[prev+1];
+            currRow[prev+1] = max(include, exclude);
+        }
+
+        // Shift to update variables for next iteration
+        nextRow = currRow;
+    }
+
+    return nextRow[0];
+}
+
+int lisSOBS(vector<int>& nums) {
+    // Step 1: Create answer array
+    vector<int> ans;
+    ans.push_back(nums[0]);
+
+    // Step 2: Loop through the array
+    for (int i=1; i<nums.size(); i++) {
+        int currNum = nums[i];
+        // If current number is the largest as per answer array then add it in answer
+        if (currNum > ans.back()) {
+            ans.push_back(currNum);
+        }
+        // Else there exist a number that is just larger than current number
+        // Find the number that is just larger than current number and replace that number with current number
+        else {
+            int justLargerIndex = lower_bound(ans.begin(), ans.end(), currNum) - ans.begin();
+            ans[justLargerIndex] = currNum;
+        }
+    }
+
+    return ans.size();
+}
+
 int lengthOfLIS(vector<int>& nums) {
     // Recursion Solution
     /*
