@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 // 11. Longest Palindromic Subsequence
@@ -363,8 +364,59 @@ int lengthOfLIS(vector<int>& nums) {
 }
 
 
-// 14.
+// 14. Russian Doll Envelope
+static bool cmp(vector<int> a, vector<int> b) {
+    if (a[0] == b[0]) return a[1] > b[1];
+    else return a[0] < b[0];
+}
 
+int meRec(vector<vector<int>>& env, int curr, int prev) {
+    // Base Case
+    if (curr >= env.size()) return 0;
+
+    // Ek Case
+    int include = 0;
+    if (prev == -1 || (env[curr][0] > env[prev][0] && env[curr][1] > env[prev][1])) {
+        include = 1 + meRec(env, curr + 1, curr);
+    }
+    int exclude = 0 + meRec(env, curr + 1, prev);
+
+    return max(include, exclude);
+}
+
+int meMem(vector<vector<int>>& env, int curr, int prev, vector<vector<int>> &dp) {
+    // Base Case
+    if (curr >= env.size()) return 0;
+
+    // DP Case
+    if (dp[curr][prev + 1] != -1) return dp[curr][prev + 1];
+
+    // Ek Case
+    int include = 0;
+    if (prev == -1 || (env[curr][0] > env[prev][0] && env[curr][1] > env[prev][1])) {
+        include = 1 + meMem(env, curr + 1, curr, dp);
+    }
+    int exclude = 0 + meMem(env, curr + 1, prev, dp);
+
+    return dp[curr][prev + 1] = max(include, exclude);
+}
+
+int maxEnvelopes(vector<vector<int>>& envelopes) {
+    sort(envelopes.begin(), envelopes.end(), cmp);
+
+    // for (int i=0; i<envelopes.size(); i++) {
+    //     cout << envelopes[i][0] << ", " << envelopes[i][1] << endl;
+    // }
+
+    // Recursion Solution
+    /*
+    return meRec(envelopes, 0, -1);
+    */
+
+    // Memoization Solution
+    vector<vector<int>> dp(envelopes.size() + 1, vector<int>(envelopes.size(), -1));
+    return meMem(envelopes, 0, -1, dp);
+}
 
 // 15.
 
