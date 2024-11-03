@@ -401,6 +401,77 @@ int meMem(vector<vector<int>>& env, int curr, int prev, vector<vector<int>> &dp)
     return dp[curr][prev + 1] = max(include, exclude);
 }
 
+int meTab(vector<vector<int>>& env) {
+    // Step 1: Create DP array
+    vector<vector<int>> dp(env.size()+2, vector<int>(env.size()+2, 0));
+
+    // Step 2: Handle base case in DP array
+    
+    // Step 3: Bottom Up
+    for (int curr=env.size()-1; curr>=0; curr--) {
+        for (int prev=curr-1; prev>=-1; prev--) {
+            int include = 0;
+            if (prev == -1 || (env[curr][0] > env[prev][0] && env[curr][1] > env[prev][1])) {
+                include = 1 + dp[curr + 1][curr + 1];
+            }
+            int exclude = 0 + dp[curr + 1][prev + 1];
+            // Update DP Array
+            dp[curr][prev + 1] = max(include, exclude);
+        }
+    }
+    
+    return dp[0][0];
+}
+
+int meSO(vector<vector<int>>& env) {
+    // Step 1: Create variables
+    vector<int> currRow(env.size() + 1, 0);
+    vector<int> nextRow(env.size() + 1, 0);
+
+    // Step 2: Handle base case in DP array
+    
+    // Step 3: Bottom Up
+    for (int curr=env.size()-1; curr>=0; curr--) {
+        for (int prev=curr-1; prev>=-1; prev--) {
+            int include = 0;
+            if (prev == -1 || (env[curr][0] > env[prev][0] && env[curr][1] > env[prev][1])) {
+                include = 1 + nextRow[curr + 1];
+            }
+            int exclude = 0 + nextRow[prev + 1];
+            // Update DP Array
+            currRow[prev + 1] = max(include, exclude);
+        }
+
+        // Update variables for next iteration
+        nextRow = currRow;
+    }
+    
+    return nextRow[0];
+}
+
+int meSOBS(vector<vector<int>>& env) {
+    // Super optimized method using Binary Search
+    
+    // Step 1: Create answer array that will store the longest increasing subsequence
+    vector<int> ans;
+    ans.push_back(env[0][1]);
+
+    // Step 2: Loop through rest of the array after adding first element in ans
+    for (int i=1; i<env.size(); i++) { 
+        // If current element is greater than last element of ans, push it in answer
+        if (env[i][1] > ans.back()) {
+            ans.push_back(env[i][1]);
+        }
+        // Else find the element just greater than current element in ans and replace it
+        else {
+            int index = lower_bound(ans.begin(), ans.end(), env[i][1]) - ans.begin();
+            ans[index] = env[i][1];
+        }
+    }
+
+    return ans.size();
+}
+
 int maxEnvelopes(vector<vector<int>>& envelopes) {
     sort(envelopes.begin(), envelopes.end(), cmp);
 
