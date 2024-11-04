@@ -489,8 +489,118 @@ int maxEnvelopes(vector<vector<int>>& envelopes) {
     return meMem(envelopes, 0, -1, dp);
 }
 
-// 15.
 
+// 15. Maximum Height by Stacking Cuboids
+int mhRec(vector<vector<int>>& c, int curr, int prev) {
+    // Base Case
+    if (curr >= c.size()) return 0;
+    // Ek Case
+    // Include current cuboid
+    int include = 0;
+    if (prev == -1 || (c[curr][0] >= c[prev][0] && c[curr][1] >= c[prev][1] && c[curr][2] >= c[prev][2])) {
+        include = c[curr][2] + mhRec(c, curr + 1, curr);
+    }
+    // Exclude current cuboid
+    int exclude = 0 + mhRec(c, curr + 1, prev);
+    return max(include, exclude);
+}
+
+int mhMem(vector<vector<int>> &c, int curr, int prev, vector<vector<int>> &dp) {
+    // Base Case
+    if (curr >= c.size()) return 0;
+
+    // DP Case
+    if (dp[curr][prev + 1] != -1) return dp[curr][prev + 1];
+
+    // Ek Case
+    // Include current cuboid
+    int include = 0;
+    if (prev == -1 || (c[curr][0] >= c[prev][0] && c[curr][1] >= c[prev][1] && c[curr][2] >= c[prev][2])) {
+        include = c[curr][2] + mhMem(c, curr + 1, curr, dp);
+    }
+    // Exclude current cuboid
+    int exclude = 0 + mhMem(c, curr + 1, prev, dp);
+    dp[curr][prev + 1] = max(include, exclude);
+    return dp[curr][prev + 1];
+}
+
+int mhTab(vector<vector<int>> &c) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(c.size() + 1, vector<int>(c.size() + 1, 0));
+    // Step 2: Base Case handle in DP
+    // Step 3: Bottom Up
+    for (int curr=c.size()-1; curr>=0; curr--) {
+        for (int prev=curr-1; prev>=-1; prev--) {
+            // Include current cuboid
+            int include = 0;
+            if (prev == -1 || (c[curr][0] >= c[prev][0] && c[curr][1] >= c[prev][1] && c[curr][2] >= c[prev][2])) {
+                include = c[curr][2] + dp[curr + 1][curr + 1];
+            }
+            // Exclude current cuboid
+            int exclude = 0 + dp[curr + 1][prev + 1];
+            dp[curr][prev + 1] = max(include, exclude);
+        }
+    }
+
+    return dp[0][0];
+}
+
+int mhSO(vector<vector<int>> &c) {
+    // Step 1: Create variables
+    vector<int> currRow(c.size() + 1, 0);
+    vector<int> nextRow(c.size() + 1, 0);
+
+    // Step 2: Bottom Up
+    for (int curr=c.size()-1; curr>=0; curr--) {
+        for (int prev=curr-1; prev>=-1; prev--) {
+            // Include current cuboid
+            int include = 0;
+            if (prev == -1 || (c[curr][0] >= c[prev][0] && c[curr][1] >= c[prev][1] && c[curr][2] >= c[prev][2])) {
+                include = c[curr][2] + nextRow[curr + 1];
+            }
+            // Exclude current cuboid
+            int exclude = 0 + nextRow[prev + 1];
+            currRow[prev + 1] = max(include, exclude);
+        }
+
+        // Update variables
+        nextRow = currRow;
+    }
+
+    return currRow[0];
+}
+
+int maxHeight(vector<vector<int>>& cuboids) {
+    for (int i=0; i<cuboids.size(); i++) {
+        sort(cuboids[i].begin(), cuboids[i].end());
+    }
+
+    sort(cuboids.begin(), cuboids.end());
+
+    // for (int i=0; i<cuboids.size(); i++) {
+    //     for (int j=0; j<cuboids[i].size(); j++) cout << cuboids[i][j] << " ";
+    //     cout << endl;
+    // }
+
+    // Recursion Solution
+    /*
+    return mhRec(cuboids, 0, -1);
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(cuboids.size() + 1, vector<int>(cuboids.size() + 1, -1));
+    return mhMem(cuboids, 0, -1, dp);
+    */
+
+    // Tabulation Solution
+    /*
+    return mhTab(cuboids);
+    */
+
+    // Space Optimization
+    return mhSO(cuboids);
+}
 
 
 int main() {
