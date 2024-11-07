@@ -288,7 +288,6 @@ int mpSO(vector<int>& prices) {
     return currRow[0];
 }
 
-
 int maxProfit(vector<int>& prices) {
     // Recursion Solution
     /*
@@ -304,10 +303,169 @@ int maxProfit(vector<int>& prices) {
 }
 
 
-// 19.
+// 19. Buy and Sell Stocks 3
+int mp2Rec(vector<int>& prices, int i, int isHolding, int limit) {
+    // Base Case
+    if (i >= prices.size() || limit == 0) return 0;
+
+    // Ek Case
+    int buyResult = 0, sellResult = 0;
+    // Buy Stock
+    if (isHolding == 0) {
+        // Buy Stock
+        int buy = mp2Rec(prices, i + 1, 1, limit) - prices[i];
+        // Skip buying
+        int skip = mp2Rec(prices, i + 1, isHolding, limit);
+
+        buyResult = max(buy, skip);
+    }
+    // Sell Stock
+    else {
+        // Sell Stock
+        int sell = mp2Rec(prices, i + 1, 0, limit - 1) + prices[i];
+        // Skip selling
+        int skip = mp2Rec(prices, i + 1, isHolding, limit);
+
+        sellResult = max(sell, skip);
+    }
+
+    return max(buyResult, sellResult);
+}
+
+int mp2Mem(vector<int>& prices, int i, int isHolding, int limit, vector<vector<vector<int>>> &dp) {
+    // Base Case
+    if (i >= prices.size() || limit == 0) return 0;
+
+    // DP Case
+    if (dp[i][isHolding][limit] != -1) return dp[i][isHolding][limit];
+
+    // Ek Case
+    int buyResult = 0, sellResult = 0;
+    // Buy Stock
+    if (isHolding == 0) {
+        // Buy Stock
+        int buy = mp2Mem(prices, i + 1, 1, limit, dp) - prices[i];
+        // Skip buying
+        int skip = mp2Mem(prices, i + 1, isHolding, limit, dp);
+
+        buyResult = max(buy, skip);
+    }
+    // Sell Stock
+    else {
+        // Sell Stock
+        int sell = mp2Mem(prices, i + 1, 0, limit - 1, dp) + prices[i];
+        // Skip selling
+        int skip = mp2Mem(prices, i + 1, isHolding, limit, dp);
+
+        sellResult = max(sell, skip);
+    }
+
+    dp[i][isHolding][limit] = max(buyResult, sellResult);
+    return dp[i][isHolding][limit];
+}
+
+int mp2Tab(vector<int>& prices) {
+    int transactionLimit = 2;      // Transaction limit
+    // Step 1: Create DP Array
+    vector<vector<vector<int>>> dp(prices.size() + 1, vector<vector<int>>(2, vector<int>(transactionLimit + 1, 0)));
+    // Step 2: Base Case
+    // Step 3: Bottom Up Approach
+    for (int i=prices.size()-1; i>=0; i--) {
+        for (int isHolding=0; isHolding<2; isHolding++) {
+            for (int limit=1; limit<=transactionLimit; limit++) {
+
+                int buyResult = 0, sellResult = 0;
+                // Buy Stock
+                if (isHolding == 0) {
+                    // Buy Stock
+                    int buy = dp[i + 1][1][limit] - prices[i];
+                    // Skip buying
+                    int skip = dp[i + 1][isHolding][limit];
+
+                    buyResult = max(buy, skip);
+                }
+                // Sell Stock
+                else {
+                    // Sell Stock
+                    int sell = dp[i + 1][0][limit - 1] + prices[i];
+                    // Skip selling
+                    int skip = dp[i + 1][isHolding][limit];
+
+                    sellResult = max(sell, skip);
+                }
+
+                dp[i][isHolding][limit] = max(buyResult, sellResult);
+
+            }
+        }
+    }
+
+    return dp[0][0][2];
+}
+
+int mp2SO(vector<int>& prices) {
+    int transactionLimit = 2;      // Transaction limit
+    // Step 1: Create variables
+    vector<vector<int>> nextRow(2, vector<int>(3, 0));
+    vector<vector<int>> currRow(2, vector<int>(3, 0));
+
+    // Step 2: Base Case
+    // Step 3: Bottom Up Approach
+    for (int i=prices.size()-1; i>=0; i--) {
+        for (int isHolding=0; isHolding<2; isHolding++) {
+            for (int limit=1; limit<=transactionLimit; limit++) {
+
+                int buyResult = 0, sellResult = 0;
+                // Buy Stock
+                if (isHolding == 0) {
+                    // Buy Stock
+                    int buy = nextRow[1][limit] - prices[i];
+                    // Skip buying
+                    int skip = nextRow[isHolding][limit];
+
+                    buyResult = max(buy, skip);
+                }
+                // Sell Stock
+                else {
+                    // Sell Stock
+                    int sell = nextRow[0][limit - 1] + prices[i];
+                    // Skip selling
+                    int skip = nextRow[isHolding][limit];
+
+                    sellResult = max(sell, skip);
+                }
+                currRow[isHolding][limit] = max(buyResult, sellResult);
+            }
+        }
+        nextRow = currRow;
+    }
+
+    return currRow[0][2];
+}
+
+int maxProfit2(vector<int>& prices) {
+    // Recursion Solution
+    /*
+    return mp2Rec(prices, 0, 0, 2);
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<vector<int>>> dp(prices.size(), vector<vector<int>>(2, vector<int>(3, -1)));
+    return mp2Mem(prices, 0, 0, 2, dp);
+    */
+
+    // Tabulation
+    /*
+    return  mp2Tab(prices);
+    */
+
+    // Space Optimization
+    return mp2SO(prices);
+}
 
 
-// 20.
+// 20. 
 
 
 
