@@ -465,7 +465,150 @@ int maxProfit2(vector<int>& prices) {
 }
 
 
-// 20. 
+// 20. Buy and Sell Stocks 4
+int mp4Rec(vector<int>& prices, int i, int isHolding, int k) {
+    // Base Case
+    if (i >= prices.size() || k == 0) return 0;
+
+    // Ek Case
+    int buyResult = 0, sellResult = 0;
+    // Buy Stock
+    if (isHolding == 0) {
+        // buy
+        int buy = mp4Rec(prices, i + 1, 1, k) - prices[i];
+        // skip
+        int skip = mp4Rec(prices, i + 1, isHolding, k);
+        buyResult = max(buy, skip);
+    }
+    // Sell Stock
+    else {
+        // sell
+        int sell = mp4Rec(prices, i + 1, 0, k - 1) + prices[i];
+        // skip
+        int skip = mp4Rec(prices, i + 1, isHolding, k);
+        sellResult = max(sell, skip);
+    }
+
+    return max(buyResult, sellResult);
+}
+
+int mp4Mem(vector<int>& prices, int i, int isHolding, int k, vector<vector<vector<int>>> &dp) {
+    // Base Case
+    if (i >= prices.size() || k == 0) return 0;
+
+    // DP Case
+    if (dp[i][isHolding][k] != -1) return dp[i][isHolding][k];
+
+    // Ek Case
+    int buyResult = 0, sellResult = 0;
+    
+    if (isHolding == 0) {
+        // buy
+        int buy = mp4Mem(prices, i + 1, 1, k, dp) - prices[i];
+        // skip
+        int skip = mp4Mem(prices, i + 1, isHolding, k, dp);
+        buyResult = max(buy, skip);
+    }
+    else {
+        // sell
+        int sell = mp4Mem(prices, i + 1, 0, k - 1, dp) + prices[i];
+        // skip
+        int skip = mp4Mem(prices, i + 1, isHolding, k, dp);
+        sellResult = max(sell, skip);
+    }
+
+    dp[i][isHolding][k] = max(buyResult, sellResult);
+    return dp[i][isHolding][k];
+}
+
+int mp4Tab(vector<int>& prices, int &k) {
+    // Step 1: Create DP Array
+    vector<vector<vector<int>>> dp(prices.size() + 1, vector<vector<int>>(2, vector<int>(k + 1, 0)));
+    // Step 2: Base Case
+    // Step 3: Bottom Up
+    for (int i=prices.size()-1; i>=0; i--) {
+        for (int isHolding=0; isHolding<2; isHolding++) {
+            for (int limit=1; limit<=k; limit++) {
+
+                int buyResult = 0, sellResult = 0;
+    
+                if (isHolding == 0) {
+                    // buy
+                    int buy = dp[i + 1][1][limit] - prices[i];
+                    // skip
+                    int skip = dp[i + 1][isHolding][limit];
+                    buyResult = max(buy, skip);
+                }
+                else {
+                    // sell
+                    int sell = dp[i + 1][0][limit - 1] + prices[i];
+                    // skip
+                    int skip = dp[i + 1][isHolding][limit];
+                    sellResult = max(sell, skip);
+                }
+
+                dp[i][isHolding][limit] = max(buyResult, sellResult);
+            }
+        }
+    }
+
+    return dp[0][0][k];
+}
+
+int mp4SO(vector<int>& prices, int &k) {
+    // Step 1: Variables
+    vector<vector<int>> currRow(2, vector<int>(k + 1, 0));
+    vector<vector<int>> nextRow(2, vector<int>(k + 1, 0));
+
+    // Step 3: Bottom Up Approach
+    for (int i=prices.size()-1; i>=0; i--) {
+        for (int isHolding=0; isHolding<2; isHolding++) {
+            for (int limit=1; limit<=k; limit++) {
+
+                int buyResult = 0, sellResult = 0;
+    
+                if (isHolding == 0) {
+                    // buy
+                    int buy = nextRow[1][limit] - prices[i];
+                    // skip
+                    int skip = nextRow[isHolding][limit];
+                    buyResult = max(buy, skip);
+                }
+                else {
+                    // sell
+                    int sell = nextRow[0][limit - 1] + prices[i];
+                    // skip
+                    int skip = nextRow[isHolding][limit];
+                    sellResult = max(sell, skip);
+                }
+
+                currRow[isHolding][limit] = max(buyResult, sellResult);
+            }
+        }
+
+        nextRow = currRow;
+    }
+
+    return currRow[0][k];
+}
+
+int maxProfit(int k, vector<int>& prices) {
+    // Recursion Solution
+    /*
+    return mp4Rec(prices, 0, 0, k);
+    */
+    // Memoization Solution
+    /*
+    vector<vector<vector<int>>> dp(prices.size(), vector<vector<int>>(2, vector<int>(k + 1, -1)));
+    return mp4Mem(prices, 0, 0, k, dp);
+    */
+    // Tabulation Solution
+    /*
+    return mp4Tab(prices, k);
+    */
+    // Space Optimization Solution
+    return mp4SO(prices, k);
+}
 
 
 
