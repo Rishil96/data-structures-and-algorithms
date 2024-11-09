@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <limits.h>
+#include <cmath>
 using namespace std;
 
 // 16. Perfect Squares
