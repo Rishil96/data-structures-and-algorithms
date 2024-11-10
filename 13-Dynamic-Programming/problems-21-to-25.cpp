@@ -1,6 +1,17 @@
 #include <iostream>
 #include <vector>
+#include <map>
+#include <unordered_map>
 using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 
 // 21. Buy and Sell Stocks 5
 int mpRec(vector<int>& prices, int i, int isHolding, int &fee) {
@@ -126,10 +137,136 @@ int maxProfit(vector<int>& prices, int fee) {
 }
 
 
-// 22.
+// 22. House Robber 3
+int robRec(TreeNode* root, bool canRob) {
+    // Base Case
+    if (!root) return 0;
+    // Ek Case
+    int rob = 0;
+    if (canRob) {
+        rob = root -> val + robRec(root -> left, false) + robRec(root -> right, false);
+    }
+
+    int dontRob = robRec(root -> left, true) + robRec(root -> right, true);
+    return max(rob, dontRob);
+}
+
+int robMem(TreeNode* root, bool canRob, map<pair<TreeNode*, bool>, int> &dp) {
+    // Base Case
+    if (!root) return 0;
+    // Dp Case
+    if (dp.find({root, canRob}) != dp.end()) return dp[{root, canRob}];
+    // Ek Case
+    int rob = 0;
+    if (canRob) {
+        rob = root -> val + robMem(root -> left, false, dp) + robMem(root -> right, false, dp);
+    }
+
+    int dontRob = robMem(root -> left, true, dp) + robMem(root -> right, true, dp);
+    dp[{root, canRob}] = max(rob, dontRob);
+    return dp[{root, canRob}];
+}
+
+int robMem2(TreeNode* root, unordered_map<TreeNode*, int> &dp) {
+    // Base Case
+    if (!root) return 0;
+
+    // DP Case
+    if (dp.find(root) != dp.end()) return dp[root];
+
+    // Ek Case
+    int robHouse = root -> val, dontRobHouse = 0;
+
+    // Include Case
+    if (root -> left) {
+        robHouse += robMem2(root -> left -> left, dp) + robMem2(root -> left -> right, dp);
+    }
+    if (root -> right) {
+        robHouse += robMem2(root -> right -> left, dp) + robMem2(root -> right -> right, dp); 
+    }
+    
+    dontRobHouse = robMem2(root -> left, dp) + robMem2(root -> right, dp);
+
+    dp[root] = max(robHouse, dontRobHouse);
+    return dp[root];
+}
+
+int rob(TreeNode* root) {
+    // Recursion Solution
+    /*
+    return robRec(root, true);
+    */
+    // Memoization Solution
+    map<pair<TreeNode*, bool>, int> dp;
+    return robMem(root, true, dp);
+}
 
 
-// 23.
+// 23. Predict the Winner
+int ptwRec(vector<int>& nums, int start, int end) {
+    // Base Case
+    if (start == end) return nums[start];
+
+    // Ek Case
+    // P1 scores nums[start] points and P2 will reduce it by choosing next
+    int diffStart = nums[start] - ptwRec(nums, start + 1, end);
+    // P1 scores nums[end] points and P2 will reduce it by choosing next
+    int diffEnd = nums[end] - ptwRec(nums, start, end - 1);
+
+    return max(diffStart, diffEnd);        
+}
+
+int ptwMem(vector<int>& nums, int start, int end, vector<vector<int>> &dp) {
+    // Base Case
+    if (start == end) return nums[start];
+    // DP Case
+    if (dp[start][end] != -1) return dp[start][end];
+    // Ek Case 
+    // P1 scores nums[start] points and P2 will reduce it by choosing next
+    int diffStart = nums[start] - ptwMem(nums, start + 1, end, dp);
+    // P1 scores nums[end] points and P2 will reduce it by choosing next
+    int diffEnd = nums[end] - ptwMem(nums, start, end - 1, dp);
+
+    dp[start][end] = max(diffStart, diffEnd); 
+    return dp[start][end];
+}
+
+int ptwTab(vector<int>& nums) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(nums.size(), vector<int>(nums.size() + 1, -1));
+    // Step 2: Base Case
+    for (int i=0; i<nums.size(); i++) {
+        dp[i][i] = nums[i];
+    }
+    // Step 3: Bottom Up
+    int i = nums.size();
+    for (int start=nums.size()-1; start>=0; start--) {
+        for (int end=i; end<nums.size(); end++) {
+            int diffStart = nums[start] - dp[start + 1][end];
+            int diffEnd = nums[end] - dp[start][end - 1];
+
+            dp[start][end] = max(diffStart, diffEnd);
+        }
+        --i;
+    }
+    return dp[0][nums.size()-1];
+}
+
+bool predictTheWinner(vector<int>& nums) {
+    int start = 0;
+    int end = nums.size()-1;
+    // Recursion Solution
+    /*
+    return ptwRec(nums, start, end) >= 0;
+    */
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(nums.size(), vector<int>(nums.size(), -1));
+    return ptwMem(nums, start, end, dp) >= 0;
+    */
+    // Tabulation Solution
+    return ptwTab(nums) >= 0;
+}
 
 
 // 24.
