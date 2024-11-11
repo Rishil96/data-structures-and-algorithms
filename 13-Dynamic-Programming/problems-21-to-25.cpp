@@ -269,7 +269,125 @@ bool predictTheWinner(vector<int>& nums) {
 }
 
 
-// 24.
+// 24. Word Break
+bool check(string &word, vector<string>& wordDict) {
+    for (auto w: wordDict) {
+        if (word == w) return true;
+    }
+    return false;
+}
+
+bool wbRec(string &s, int i, string currWord, unordered_map<string, bool> &wordDict) {
+    // Base Case
+    if (i >= s.size()) {
+        if (wordDict[currWord]) return true;
+        return false;
+    }
+
+    // Ek Case
+    currWord += s[i];
+
+    // Recursion Case
+    bool useWord = 0;
+    if (wordDict[currWord] == true) {
+        useWord = wbRec(s, i + 1, "", wordDict);
+    }
+    
+    bool dontUseWord = wbRec(s, i + 1, currWord, wordDict);
+
+    return useWord || dontUseWord;
+}
+
+bool wbMem(string &s, int i, string currWord, unordered_map<string, bool> &wordDict, map<pair<int, string>, bool> &dp) {
+    // Base Case
+    if (i >= s.size()) {
+        if (wordDict[currWord]) return true;
+        return false;
+    }
+
+    // DP Case
+    if (dp.find({i, currWord}) != dp.end()) return dp[{i, currWord}];
+
+    // Ek Case
+    currWord += s[i];
+
+    // Recursion Case
+    bool useWord = 0;
+    if (wordDict[currWord] == true) {
+        useWord = wbMem(s, i + 1, "", wordDict, dp);
+    }
+    
+    bool dontUseWord = wbMem(s, i + 1, currWord, wordDict, dp);
+
+    dp[{i, currWord}] = useWord || dontUseWord;
+    return dp[{i, currWord}];
+}
+
+bool wbMemoization(string &s, vector<string>& wordDict, int index, vector<int>& dp) {
+    // Base Case
+    if (index >= s.size()) return true;
+
+    // DP Case
+    if (dp[index] != -1) return dp[index];
+
+    // Ek Case
+    bool flag = false;
+    string word = "";
+
+    for (int i=index; i<s.size(); i++) {
+        word += s[i];
+        if (check(word, wordDict)) {
+            flag = flag || wbMemoization(s, wordDict, i+1, dp);
+        }
+    }
+
+    dp[index] = flag;
+    return dp[index];
+}
+
+bool wbTab(string &s, vector<string>& wordDict) {
+    // Step 1: Create DP Array
+    vector<int> dp(s.size() + 1, 0);
+    // Step 2: Add base case
+    dp[s.size()] = 1;
+    // Step 3: Bottom up
+    for (int index=s.size()-1; index>=0; index--) {
+        bool flag = false;
+        string word = "";
+        for (int i=index; i<s.size(); i++) {
+            word += s[i];
+            if (check(word, wordDict)) {
+                flag = flag || dp[i+1];
+            }
+        }
+
+        dp[index] = flag;
+    }
+    return dp[0];
+}
+
+bool wordBreak(string s, vector<string>& wordDict) {
+    // Create map for easy access of words
+    unordered_map<string, bool> words;
+    for (auto w: wordDict) words[w] = 1;
+
+    // Recursion Solution
+    /*
+    return wbRec(s, 0, "", words);
+    */
+    // Memoization Solution
+    /*
+    map<pair<int, string>, bool> dp;
+    return wbMem(s, 0, "", words, dp);
+    */
+    // Memoization Solution 2
+    /*
+    vector<int> dp(s.size() + 1, -1);
+    return wbMemoization(s, wordDict, 0, dp);
+    */
+    // Tabulation Solution
+    return wbTab(s, wordDict);
+}
 
 
 // 25.
