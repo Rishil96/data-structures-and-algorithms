@@ -390,8 +390,68 @@ bool wordBreak(string s, vector<string>& wordDict) {
 }
 
 
-// 25.
+// 25. Target Sum
+int ftsRec(vector<int>& nums, int target, int i) {
+    // Base Case
+    if (i >= nums.size() && target == 0) return 1;
+    if (i >= nums.size()) return 0;
 
+    // Ek Case
+    int add = ftsRec(nums, target + nums[i], i + 1);
+    int subtract = ftsRec(nums, target - nums[i], i + 1);
+    return add + subtract;
+}
+
+int ftsMem(vector<int>& nums, int target, int i, map<pair<int, int>, int> &dp) {
+    // Base Case
+    if (i >= nums.size() && target == 0) return 1;
+    if (i >= nums.size()) return 0;
+
+    // DP Case
+    if (dp.find({i, target}) != dp.end()) return dp[{i, target}];
+
+    // Ek Case
+    int add = ftsRec(nums, target + nums[i], i + 1);
+    int subtract = ftsRec(nums, target - nums[i], i + 1);
+    dp[{i, target}] = add + subtract;
+    return dp[{i, target}];
+}
+
+int ftsTab(vector<int>& nums, int target) {
+    // Step 1: Create DP
+    map<pair<int, int>, int> dp;
+    // Step 2: Add Base Case
+    dp[{nums.size(), 0}] = 1;
+    // Step 3: Bottom up
+    int total = 0;
+    for (auto n: nums) total += n;
+
+    for (int i=nums.size()-1; i>=0; i--) {
+        for (int t=-total; t<=total; t++) {
+            // Add + before current number
+            int left = (dp.find({i+1, t - nums[i]}) != dp.end()) ? dp[{i+1,t - nums[i]}] : 0;
+            // Add - before current number
+            int right = (dp.find({i+1, t + nums[i]}) != dp.end()) ? dp[{i+1, t + nums[i]}] : 0;
+
+            dp[{i,t}] = left + right;
+        }
+    }
+    return dp[{0, target}];
+}
+
+int findTargetSumWays(vector<int>& nums, int target) {
+    // Recursion Solution
+    /*
+    return ftsRec(nums, target, 0);
+    */
+    // Memoization Solution
+    /*
+    map<pair<int, int>, int> dp;
+    return ftsMem(nums, target, 0, dp);
+    */
+    // Tabulation Solution
+    return ftsTab(nums, target);
+}
 
 
 int main() {
