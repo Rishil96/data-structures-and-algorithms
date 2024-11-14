@@ -91,7 +91,67 @@ int findMaxForm(vector<string>& strs, int m, int n) {
 }
 
 
-// 27. 
+// 27. Minimum Swaps to make sequences increasing
+int msRec(vector<int>& nums1, vector<int>& nums2, int i, int p1, int p2, int swap) {
+    // Base Case
+    if (i >= nums1.size()) return 0;
+
+    // Ek Case
+    int swapped = INT_MAX, notSwapped = INT_MAX;
+    /*
+    Swap Num: 
+    Only swap if both of the below conditions are true
+        - current nums1 element i.e. i is greater than previous nums2 element so it fits in nums2 array
+        - current nums2 element i.e. i is greater than previous nums1 element so it fits in nums1 array
+    */ 
+    if (nums1[i] > p2 && nums2[i] > p1) {
+        swapped = 1 + msRec(nums1, nums2, i + 1, nums2[i], nums1[i], 1);
+    }
+    /* 
+    Don't swap num if:
+        - previous nums1 element is smaller than current nums1 element
+        - previous nums2 element is smaller than current nums2 element
+    */
+    if (p1 < nums1[i] && p2 < nums2[i]) {
+        notSwapped = 0 + msRec(nums1, nums2, i + 1, nums1[i], nums2[i], 0);
+    }
+
+    return min(swapped, notSwapped);
+}
+
+int msMem(vector<int>& nums1, vector<int>& nums2, int i, int prevArr1Num, int prevArr2Num, int swap, vector<vector<int>> &dp) {
+    // Base Case
+    if (i >= nums1.size()) return 0;
+
+    // DP Case
+    if (dp[i][swap] != -1) return dp[i][swap];
+
+    // Ek Case
+    int swapped = INT_MAX, notSwapped = INT_MAX;
+
+    // Swap Case
+    if (nums1[i] > prevArr2Num && nums2[i] > prevArr1Num) {
+        swapped = 1 + msMem(nums1, nums2, i + 1, nums2[i], nums1[i], 1, dp);
+    }
+    // Not Swap Case
+    if (prevArr1Num < nums1[i] && prevArr2Num < nums2[i]) {
+        notSwapped = 0 + msMem(nums1, nums2, i + 1, nums1[i], nums2[i], 0, dp);
+    }
+
+    dp[i][swap] = min(swapped, notSwapped);
+    return dp[i][swap];
+} 
+
+int minSwap(vector<int>& nums1, vector<int>& nums2) {
+    // Recursion Solution
+    /*
+    return msRec(nums1, nums2, 0, -1, -1, 0);
+    */
+
+    // Memoization Solution
+    vector<vector<int>> dp(nums1.size(), vector<int>(2, -1));
+    return msMem(nums1, nums2, 0, -1, -1, 0, dp);
+}
 
 
 // 28.
