@@ -154,10 +154,202 @@ int minSwap(vector<int>& nums1, vector<int>& nums2) {
 }
 
 
-// 28.
+// 28. Longest Palindromic Substring
+int maxLen = 1, startIndex = 0;
+
+bool lpRec(string &s, int start, int end) {
+    // Base Case
+    if (start >= end) return true;
+
+    // Ek Case
+    bool flag = false;
+    
+    if (s[start] == s[end]) {
+        flag = lpRec(s, start + 1, end - 1);
+    }
+
+    if (flag) {
+        int currLen = end - start + 1;
+        if (currLen > maxLen) {
+            maxLen = currLen;
+            startIndex = start;
+        }
+    }
+
+    return flag;
+}
+
+bool lpMem(string &s, int start, int end, vector<vector<int>> &dp) {
+    // Base Case
+    if (start >= end) return true;
+
+    // DP Case
+    if (dp[start][end] != -1) return dp[start][end];
+
+    // Ek Case
+    bool flag = false;
+    
+    if (s[start] == s[end]) {
+        flag = lpMem(s, start + 1, end - 1, dp);
+    }
+
+    if (flag) {
+        int currLen = end - start + 1;
+        if (currLen > maxLen) {
+            maxLen = currLen;
+            startIndex = start;
+        }
+    }
+
+    return dp[start][end] = flag;
+}
+
+string longestPalindrome(string s) {
+    int n = s.size();
+    // Recursion Solution
+    /*
+    for (int start=0; start<n; start++) {
+        for (int end=start; end<n; end++) {
+            bool ans = lpRec(s, start, end);
+        }
+    }
+    */
+    // Memoization Solution
+    vector<vector<int>> dp(n, vector<int>(n, -1));
+    for (int start=0; start<n; start++) {
+        for (int end=start; end<n; end++) {
+            bool ans = lpMem(s, start, end, dp);
+        }
+    }
+
+    return s.substr(startIndex, maxLen);
+}
 
 
-// 29.
+// 29. Minimum ASCII Delete Sum for Two Strings
+int mdsRec(string &s1, string &s2, int i, int j) {
+    // Base Case
+    // Both strings read completely
+    if (i >= s1.size() && j >= s2.size()) return 0;
+    // s1 read completely
+    if (i >= s1.size()) {
+        int add = 0;
+        for (int x=j; x<s2.size(); x++) add += s2[x];
+        return add;
+    }
+    // s2 read completely
+    if (j >= s2.size()) {
+        int add = 0;
+        for (int x=i; x<s1.size(); x++) add += s1[x];
+        return add;
+    }
+    // Ek Case
+    int cost;
+    int ascii1 = s1[i];
+    int ascii2 = s2[j];
+    // If both current characters are equal, don't add ASCII
+    if (ascii1 == ascii2) {
+        cost = mdsRec(s1, s2, i+1, j+1);
+    }
+    else {
+        // Try deleting 
+        int leftAdd = ascii1 + mdsRec(s1, s2, i + 1, j);
+        int rightAdd = ascii2 + mdsRec(s1, s2, i, j + 1);
+        cost = min(leftAdd, rightAdd);
+    }
+
+    return cost;
+}
+
+int mdsMem(string &s1, string &s2, int i, int j, vector<vector<int>> &dp) {
+    // Base Case
+    // Both strings read completely
+    if (i >= s1.size() && j >= s2.size()) return 0;
+    // s1 read completely
+    if (i >= s1.size()) {
+        int add = 0;
+        for (int x=j; x<s2.size(); x++) add += s2[x];
+        return add;
+    }
+    // s2 read completely
+    if (j >= s2.size()) {
+        int add = 0;
+        for (int x=i; x<s1.size(); x++) add += s1[x];
+        return add;
+    }
+
+    // DP Case
+    if (dp[i][j] != -1) return dp[i][j]; 
+
+    // Ek Case
+    int cost;
+    int ascii1 = s1[i];
+    int ascii2 = s2[j];
+    // If both current characters are equal, don't add ASCII
+    if (ascii1 == ascii2) {
+        cost = mdsMem(s1, s2, i+1, j+1, dp);
+    }
+    else {
+        // Try deleting 
+        int leftAdd = ascii1 + mdsMem(s1, s2, i + 1, j, dp);
+        int rightAdd = ascii2 + mdsMem(s1, s2, i, j + 1, dp);
+        cost = min(leftAdd, rightAdd);
+    }
+
+    dp[i][j] = cost;
+    return dp[i][j];
+} 
+
+int mdsTab(string &s1, string &s2) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(s1.size() + 2, vector<int>(s2.size() + 2, 0));
+    // Step 2: Base case handle
+    // Remaining to do, the answer returned is not correct due to base case not handled properly
+    // Step 3: Bottom up
+    for (int i=s1.size()-1; i>=0; i--) {
+        for (int j=s2.size()-1; j>=0; j--) {
+            // Ek Case
+            int cost;
+            int ascii1 = s1[i];
+            int ascii2 = s2[j];
+            // If both current characters are equal, don't add ASCII
+            if (ascii1 == ascii2) {
+                cost = dp[i+1][j+1];
+            }
+            else {
+                // Try deleting 
+                int leftAdd = ascii1 + dp[i + 1][j];
+                int rightAdd = ascii2 + dp[i][j + 1];
+                cost = min(leftAdd, rightAdd);
+            }
+
+            dp[i][j] = cost;
+        }
+    }
+
+    for (int i=0; i<s1.size(); ++i) {
+        for (int j=0; j<s2.size(); ++j) {
+            cout << dp[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    return dp[0][0];
+}
+
+int minimumDeleteSum(string s1, string s2) {
+    // Recursion Solution
+    /*
+    return mdsRec(s1, s2, 0, 0);
+    */
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(s1.size(), vector<int>(s2.size(), -1));
+    return mdsMem(s1, s2, 0, 0, dp);
+    */
+    // Tabulation Solution
+    return mdsTab(s1, s2);
+}
 
 
 // 30.
