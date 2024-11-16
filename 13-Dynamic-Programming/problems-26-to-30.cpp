@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
 using namespace std;
 
 // 26. Ones and Zeros
@@ -352,7 +353,74 @@ int minimumDeleteSum(string s1, string s2) {
 }
 
 
-// 30.
+// 30. Reducing Dishes
+int msRec(vector<int>& satisfaction, int i, int &time) {
+    // Base Case
+    if (i >= satisfaction.size()) return 0;
+    // Ek Case
+    // Cook current dish
+    int cook = satisfaction[i] * time;
+    time++;
+    cook += msRec(satisfaction, i + 1, time);
+    time--;
+    // Don't cook current dish
+    int dontCook = msRec(satisfaction, i + 1, time);
+
+    return max(cook, dontCook); 
+}
+
+int msMem(vector<int>& satisfaction, int i, int &time, vector<vector<int>> &dp) {
+    // Base Case
+    if (i >= satisfaction.size()) return 0;
+    // DP Case
+    if (dp[i][time] != -1) return dp[i][time];
+    // Ek Case
+    // Cook current dish
+    int cook = satisfaction[i] * time;
+    time++;
+    cook += msMem(satisfaction, i + 1, time, dp);
+    time--;
+    // Don't cook current dish
+    int dontCook = msMem(satisfaction, i + 1, time, dp);
+
+    dp[i][time] = max(cook, dontCook);
+    return dp[i][time]; 
+}
+
+int msTab(vector<int>& sat) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(sat.size() + 1, vector<int>(sat.size() + 2, 0));
+    // Step 2: Base Case
+    // Step 3: Bottom up approach
+    for (int i=sat.size()-1; i>=0; i--) {
+        for (int time=sat.size(); time>=1; time--) {
+            int cook = sat[i] * time;
+            cook += dp[i + 1][time + 1];
+
+            // Don't cook current dish
+            int dontCook = dp[i + 1][time];
+            dp[i][time] = max(cook, dontCook);
+        }
+    }
+    return dp[0][1]; 
+}
+
+int maxSatisfaction(vector<int>& satisfaction) {
+    // Sort the dishes as per most disliked to most liked
+    sort(satisfaction.begin(), satisfaction.end());
+    int time = 1;
+    // Recursion Solution
+    /*
+    return msRec(satisfaction, 0, time);
+    */
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(satisfaction.size(), vector<int>(satisfaction.size() + 1, -1));
+    return msMem(satisfaction, 0, time, dp);
+    */
+    // Tabulation Soluation
+    return msTab(satisfaction);
+}
 
 
 
