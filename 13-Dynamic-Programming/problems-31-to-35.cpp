@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <unordered_map>
 using namespace std;
 
 
@@ -93,7 +94,39 @@ vector<TreeNode*> generateTrees(int n) {
 }
 
 
-// 32.
+// 32. Word Break 2
+vector<string> wbRec(string &s, unordered_map<string, bool> &dict, int index) {
+    // Base Case
+    if (index >= s.size()) return {""};
+
+    // Ek Case
+    vector<string> ans;
+    string word;
+
+    for (int i=index; i<s.size(); i++) {
+        word.push_back(s[i]);                           // Push current character in word
+        if (dict.find(word) == dict.end()) continue;    // If not a word in dict then continue
+
+        vector<string> right = wbRec(s, dict, i+1);     // Build answer from ahead using Recursion
+        for (auto eachRightWord: right) {
+            // Build sentence from each sentence from future answer
+            string endPart;
+            if (eachRightWord.size() > 0) endPart = " " + eachRightWord;
+            ans.push_back(word + endPart);
+        }
+    }
+
+    return ans;
+}
+
+vector<string> wordBreak(string s, vector<string>& wordDict) {
+    // Create map of dictionary words
+    unordered_map<string, bool> words;
+    for (auto w: wordDict) words[w] = 1;
+    
+    // Recursion Ans
+    return wbRec(s, words, 0);
+}
 
 
 // 33.
