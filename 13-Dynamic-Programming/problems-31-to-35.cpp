@@ -129,7 +129,92 @@ vector<string> wordBreak(string s, vector<string>& wordDict) {
 }
 
 
-// 33.
+// 33. Distinct Subsequences
+int ndRec(string &s, string &t, int i, int j) {
+    // Base Case 1: Full match of s and t
+    if (i >= s.size() && j >= t.size()) {
+        return 1;
+    }
+    // Base Case 2: s consumed but not fully matched with t
+    if (i >= s.size()) return 0;
+
+    // Ek Case
+    int ans;
+    // Current character matches for both strings
+    if (s[i] == t[j]) {
+        int ans1 = ndRec(s, t, i + 1, j + 1);       // Match current character
+        int ans2 = ndRec(s, t, i + 1, j);           // Don't match and try to get another subseq from s
+        ans = ans1 + ans2;
+    }
+    // Current character don't match for s and t
+    else {
+        ans = ndRec(s, t, i + 1, j);                // Try another subseq by moving s index ahead
+    }
+
+    return ans;
+}
+
+int ndMem(string &s, string &t, int i, int j, vector<vector<int>> &dp) {
+    // Base Case 1: Full match of t
+    if (j >= t.size()) return 1;
+    // Base Case 2: s consumed but not fully matched with t
+    if (i >= s.size()) return 0;
+
+    // DP Case
+    if (dp[i][j] != -1) return dp[i][j];
+
+    // Ek Case
+    int ans;
+    // Current character matches for both strings
+    if (s[i] == t[j]) {
+        int ans1 = ndMem(s, t, i + 1, j + 1, dp);       // Match current character
+        int ans2 = ndMem(s, t, i + 1, j, dp);           // Don't match and try to get another subseq from s
+        ans = ans1 + ans2;
+    }
+    // Current character don't match for s and t
+    else {
+        ans = ndMem(s, t, i + 1, j, dp);                // Try another subseq by moving s index ahead
+    }
+
+    return dp[i][j] = ans;
+}
+
+int ndTab(string &s, string &t) {
+    // Step 1: Create DP Array
+    vector<vector<long long int>> dp(s.size() + 1, vector<long long int>(t.size() + 1, 0));
+    // Step 2: Base Case Update
+    for (int i=0; i<dp.size(); i++) dp[i][t.size()] = 1;
+    // Step 3: Bottom Up Approach
+    for (int i=s.size()-1; i>=0; i--) {
+        for (int j=t.size()-1; j>=0; j--) {
+
+            int ans = 0;
+            // Current character matches for both strings
+            if (s[i] == t[j]) {
+                ans += dp[i + 1][j + 1];       // Match current character
+            }
+            ans += dp[i + 1][j];                // Try another subseq by moving s index ahead
+            // Update answer for current i and j
+            dp[i][j] = ans;
+        }
+    }
+
+    return dp[0][0];
+}
+
+int numDistinct(string s, string t) {
+    // Recursion Solution
+    /*
+    return ndRec(s, t, 0, 0);
+    */
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(s.size(), vector<int>(t.size(), -1));
+    return ndMem(s, t, 0, 0, dp);
+    */
+    // Tabulation Solution
+    return ndTab(s, t);
+}
 
 
 // 34.
