@@ -217,10 +217,101 @@ int numDistinct(string s, string t) {
 }
 
 
-// 34.
+// 34. Interleaving String
+bool iiRec(string &s1, string &s2, string &s3, int p1, int p2, int p3) {
+    // Base Case
+    if (p3 >= s3.size()) return true;
+
+    // Ek Case
+    bool leftAns = false, rightAns = false;
+
+    if (p1 < s1.size() && s1[p1] == s3[p3]) {
+        leftAns = iiRec(s1, s2, s3, p1 + 1, p2, p3 + 1);
+    }
+
+    if (p2 < s2.size() && s2[p2] == s3[p3]) {
+        rightAns = iiRec(s1, s2, s3, p1, p2 + 1, p3 + 1);
+    }
+
+    return leftAns || rightAns;
+}
+
+bool iiMem(string &s1, string &s2, string &s3, int p1, int p2, int p3, vector<vector<vector<int>>> &dp) {
+    // Base Case
+    if (p3 >= s3.size()) return true;
+
+    // DP Case
+    if (dp[p1][p2][p3] != -1) return dp[p1][p2][p3];
+
+    // Ek Case
+    bool leftAns = false, rightAns = false;
+
+    if (p1 < s1.size() && s1[p1] == s3[p3]) {
+        leftAns = iiMem(s1, s2, s3, p1 + 1, p2, p3 + 1, dp);
+    }
+
+    if (p2 < s2.size() && s2[p2] == s3[p3]) {
+        rightAns = iiMem(s1, s2, s3, p1, p2 + 1, p3 + 1, dp);
+    }
+
+    return dp[p1][p2][p3] = leftAns || rightAns;
+}
+
+bool iiTab(string &s1, string &s2, string &s3) {
+    // Step 1: Create DP Array
+    vector<vector<vector<int>>> dp(s1.size() + 1, vector<vector<int>>(s2.size() + 1, vector<int>(s3.size() + 1, 0)));
+    
+    // Step 2: Base Case
+    for (int p1=0; p1<=s1.size(); p1++) {
+        for (int p2=0; p2<=s2.size(); p2++) {
+            dp[p1][p2][s3.size()] = 1;
+        }
+    }
+
+    // Step 3: Bottom Up
+    for (int p1=s1.size(); p1>=0; p1--) {
+        for (int p2=s2.size(); p2>=0; p2--) {
+            for (int p3=s3.size()-1; p3>=0; p3--) {
+
+                bool leftAns = false, rightAns = false;
+
+                if (p1 < s1.size() && s1[p1] == s3[p3]) {
+                    leftAns = dp[p1 + 1][p2][p3 + 1];
+                }
+
+                if (p2 < s2.size() && s2[p2] == s3[p3]) {
+                    rightAns = dp[p1][p2 + 1][p3 + 1];
+                }
+
+                dp[p1][p2][p3] = leftAns || rightAns;
+            }
+        }
+    }
+
+    return dp[0][0][0];
+}
+
+bool isInterleave(string s1, string s2, string s3) {
+    // If s1 and s2 don't add up to s3 then no solution is possible
+    if (s1.size() + s2.size() != s3.size()) return false;
+    
+    // Recursion Solution
+    /*
+    return iiRec(s1, s2, s3, 0, 0, 0);
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<vector<int>>> dp(s1.size() + 1, vector<vector<int>>(s2.size() + 1, vector<int>(s3.size(), -1)));
+    return iiMem(s1, s2, s3, 0, 0, 0, dp);
+    */
+
+    // Tabulation Solution
+    return iiTab(s1, s2, s3);
+}
 
 
-// 35.
+// 35. 
 
 
 
