@@ -311,8 +311,91 @@ bool isInterleave(string s1, string s2, string s3) {
 }
 
 
-// 35. 
+// 35. Minimum Insertion Steps to make a string palindrome
+int miRec(string &s, int left, int right) {
+    // Base Case
+    if (left >= right) return 0;
 
+    // Ek Case
+    int ans = INT_MAX;
+    // IF both ends are equal no insertion needed
+    if (s[left] == s[right]) {
+        ans = 0 + miRec(s, left + 1, right - 1);
+    }
+    // Insert once in left and once in right
+    else {
+        int leftInsertAns = 1 + miRec(s, left, right - 1);
+        int rightInsertAns = 1 + miRec(s, left + 1, right);
+        ans = min(leftInsertAns, rightInsertAns);
+    }
+
+    return ans;
+}
+
+int miMem(string &s, int left, int right, vector<vector<int>>& dp) {
+    // Base Case
+    if (left >= right) return 0;
+
+    // DP Case
+    if (dp[left][right] != -1) return dp[left][right];
+
+    // Ek Case
+    int ans = INT_MAX;
+    // IF both ends are equal no insertion needed
+    if (s[left] == s[right]) {
+        ans = 0 + miMem(s, left + 1, right - 1, dp);
+    }
+    // Insert once in left and once in right
+    else {
+        int leftInsertAns = 1 + miMem(s, left, right - 1, dp);
+        int rightInsertAns = 1 + miMem(s, left + 1, right, dp);
+        ans = min(leftInsertAns, rightInsertAns);
+    }
+
+    return dp[left][right] = ans;
+}
+
+int miTab(string &s) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(s.size() + 1, vector<int>(s.size() + 1, 0));
+    // Step 2: Base Case
+    // Step 3: Bottom Up
+    for (int left=s.size()-1; left>=0; left--) {
+        for (int right=left + 1; right<s.size(); right++) {
+            // PTR: right should always be greater than left
+            int ans = INT_MAX;
+            // IF both ends are equal no insertion needed
+            if (s[left] == s[right]) {
+                ans = 0 + dp[left + 1][right];
+            }
+            // Insert once in left and once in right
+            else {
+                int leftInsertAns = 1 + dp[left][right];
+                int rightInsertAns = 1 + dp[left + 1][right + 1];
+                ans = min(leftInsertAns, rightInsertAns);
+            }
+
+            dp[left][right + 1] = ans;
+        }
+    }
+    
+    return dp[0][s.size()];
+
+}
+
+int minInsertions(string s) {
+    // Recursion Solution
+    /*
+    return miRec(s, 0, s.size()-1);
+    */
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(s.size(), vector<int>(s.size(), -1));
+    return miMem(s, 0, s.size()-1, dp);
+    */
+    // Tabulation Solution
+    return miTab(s);
+}
 
 
 int main() {
