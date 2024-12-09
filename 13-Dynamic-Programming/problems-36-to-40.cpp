@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <map>
+#include <algorithm>
 using namespace std;
 
 // 36. Minimum number of removals to make mountain array
@@ -46,7 +48,71 @@ int minimumMountainRemovals(vector<int>& nums) {
 }
 
 
-// 37.
+// 37. Make Array Strictly increasing
+#define INF (1e9 + 1)
+
+int maiRec(vector<int>& arr1, vector<int>& arr2, int prev, int i) {
+    // Base Case
+    if (i >= arr1.size()) return 0;
+
+    // Ek Case
+    // Exclude Case: If prev is smaller than current, simply ignore and move ahead
+    int exclude = INF;
+    if (prev < arr1[i]) {
+        exclude = 0 + maiRec(arr1, arr2, arr1[i], i + 1);
+    }
+
+    // Include Case: Replace current with a number greater than previous whether actual current is greater than previous or not
+    int include = INF;
+    auto it = upper_bound(arr2.begin(), arr2.end(), prev);
+    if (it != arr2.end()) {
+        int index = it - arr2.begin();
+        include = 1 + maiRec(arr1, arr2, arr2[index], i + 1);
+    }
+
+    return min(exclude, include);
+}
+
+int maiMem(vector<int>& arr1, vector<int>& arr2, int prev, int i, map<pair<int, int>, int> &dp) {
+    // Base Case
+    if (i >= arr1.size()) return 0;
+
+    // DP Case
+    if (dp.find({prev, i}) != dp.end()) return dp[{prev, i}];
+
+    // Ek Case
+    // Exclude Case: If prev is smaller than current, simply ignore and move ahead
+    int exclude = INF;
+    if (prev < arr1[i]) {
+        exclude = 0 + maiMem(arr1, arr2, arr1[i], i + 1, dp);
+    }
+
+    // Include Case: Replace current with a number greater than previous whether actual current is greater than previous or not
+    int include = INF;
+    auto it = upper_bound(arr2.begin(), arr2.end(), prev);
+    if (it != arr2.end()) {
+        int index = it - arr2.begin();
+        include = 1 + maiMem(arr1, arr2, arr2[index], i + 1, dp);
+    }
+
+    return dp[{prev, i}] = min(exclude, include);
+}
+
+int makeArrayIncreasing(vector<int>& arr1, vector<int>& arr2) {
+    // Sort 2nd array
+    sort(arr2.begin(), arr2.end());
+
+    // Recursion Solution
+    /*
+    int ans = maiRec(arr1, arr2, -1, 0);
+    return ans != INF ? ans : -1;
+    */
+
+    // Memoization Solution
+    map<pair<int, int>, int> dp;
+    int ans = maiMem(arr1, arr2, -1, 0, dp);
+    return ans != INF ? ans : -1;
+}
 
 
 // 38.
