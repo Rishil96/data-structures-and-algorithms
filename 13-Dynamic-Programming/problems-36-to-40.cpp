@@ -115,7 +115,63 @@ int makeArrayIncreasing(vector<int>& arr1, vector<int>& arr2) {
 }
 
 
-// 38.
+// 38. Burst Balloons
+int mcRec(vector<int>& nums, int start, int end) {
+    // Base Case
+    if (start > end) return 0;
+
+    // Ek Case
+    int maxCoins = INT_MIN;
+
+    /*
+    Reverse Approach:-
+        assume that the first balloon we burst is actually the last balloon left and we are bursting the balloons from last to first
+        For first case, we assume to burst all balloons once but since we are assuming it to be the last balloon, we use the boundaries as the left and right of it instead of its neighbour
+    */
+    for (int i=start; i<=end; i++) {
+        int burstCurrent = nums[start - 1] * nums[i] * nums[end + 1];
+        int burstLeft = mcRec(nums, start, i - 1);
+        int burstRight = mcRec(nums, i + 1, end);
+        int currResult = burstCurrent + burstLeft + burstRight;
+        maxCoins = max(maxCoins, currResult);
+    }
+
+    return maxCoins;
+}
+
+int mcMem(vector<int>& nums, int start, int end, vector<vector<int>> &dp) {
+    // Base Case
+    if (start > end) return 0;
+
+    // DP Case
+    if (dp[start][end] != -1) return dp[start][end];
+
+    // Ek Case
+    int maxCoins = INT_MIN;
+
+    for (int i=start; i<=end; i++) {
+        int burstCurrent = nums[start - 1] * nums[i] * nums[end + 1];
+        int burstLeft = mcMem(nums, start, i - 1, dp);
+        int burstRight = mcMem(nums, i + 1, end, dp);
+        int currResult = burstCurrent + burstLeft + burstRight;
+        maxCoins = max(maxCoins, currResult);
+    }
+
+    return dp[start][end] = maxCoins;
+} 
+
+int maxCoins(vector<int>& nums) {
+    // Insert 1 numbered balloons at start and end
+    nums.insert(nums.begin(), 1);
+    nums.push_back(1);
+    // Recursion Solution
+    /*
+    return mcRec(nums, 1, nums.size() - 2);
+    */
+    // Memoization Solution
+    vector<vector<int>> dp(nums.size(), vector<int>(nums.size(), -1));
+    return mcMem(nums, 1, nums.size() - 2, dp);
+}
 
 
 // 39.
