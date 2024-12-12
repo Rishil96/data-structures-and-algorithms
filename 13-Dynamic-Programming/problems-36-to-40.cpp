@@ -174,10 +174,85 @@ int maxCoins(vector<int>& nums) {
 }
 
 
-// 39.
+// 39. Stone Game
+bool stoneGame(vector<int>& piles) {
+    // Since Alice can always pick first and the bigger of the pile, there will be atleast 1 way by which Alice will win
+    return true;
+}
 
 
-// 40.
+// 40. Stone Game 2
+int sg2Rec(vector<int>& piles, int start, int M, bool alice) {
+    // Base Case
+    if (start >= piles.size()) return 0;
+
+    // Ek Case
+    int points = 0;        
+    int ans = alice ? INT_MIN : INT_MAX;
+    
+    for (int X=1; X<=2*M; X++) {
+        // Handle index out of bounds
+        if (X - 1 + start >= piles.size()) break;
+
+        // Since we only need to get scores of Alice, only add stones during Alice's turn
+        if (alice)
+            points += piles[X + start - 1];
+
+        // Get recursion answer
+        int currAns = points + sg2Rec(piles, X + start, max(M, X), !alice);
+        // Try to maximize alice's score
+        if (alice) ans = max(ans, currAns);
+        // Try to minimize bob's score
+        else ans = min(ans, currAns);
+    }
+
+    return ans;
+}
+
+int sg2Mem(vector<int>& piles, int start, int M, bool alice, vector<vector<vector<int>>> &dp) {
+    // Base Case
+    if (start >= piles.size()) return 0;
+
+    // DP Case
+    if (dp[start][M][alice] != -1) return dp[start][M][alice];
+
+    // Ek Case
+    int points = 0;        
+    int ans = alice ? INT_MIN : INT_MAX;
+    
+    for (int X=1; X<=2*M; X++) {
+        // Handle index out of bounds
+        if (X - 1 + start >= piles.size()) break;
+
+        // Since we only need to get scores of Alice, only add stones during Alice's turn
+        if (alice)
+            points += piles[X + start - 1];
+
+        // Get recursion answer
+        int currAns = points + sg2Mem(piles, X + start, max(M, X), !alice, dp);
+        // Try to maximize alice's score
+        if (alice) ans = max(ans, currAns);
+        // Try to minimize bob's score
+        else ans = min(ans, currAns);
+    }
+
+    return dp[start][M][alice] = ans;
+}
+
+int stoneGameII(vector<int>& piles) {
+    int M = 1;
+    // Recursion Solution
+    /*
+    return sg2Rec(piles, 0, M, true);
+    */
+
+    // Memoization Solution
+    vector<vector<vector<int>>> dp(piles.size(), vector<vector<int>>(piles.size()+1, vector<int>(2, -1)));
+    return sg2Mem(piles, 0, M, true, dp);
+}
+
+
+// 41.
 
 
 
