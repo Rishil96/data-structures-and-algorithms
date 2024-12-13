@@ -252,7 +252,99 @@ int stoneGameII(vector<int>& piles) {
 }
 
 
-// 41.
+// 41. Stone Game 3
+int sg3Rec(vector<int>& stones, int i, bool alice) {
+    // Base Case
+    if (i >= stones.size()) return 0;
+
+    // Ek Case
+    int ans = alice ? INT_MIN : INT_MAX;
+    int total = 0;
+
+    // Try to pick 1, 2 and 3 stones every turn and use the best result possible forward for that player
+    for (int pick=1; pick<=3; pick++) {
+        if (i + pick - 1 >= stones.size()) break;               // Stone array out of bound
+        total += stones[i + pick - 1];                          // Add stone value in score
+        int currAns = sg3Rec(stones, i + pick, !alice);         // Get recursion answer
+        // If alice is playing then add total stones in current answer and maximize it
+        // If bob is playing then subtract total stones from current answer and minimize it
+        currAns = alice ? currAns + total : currAns - total;
+        ans = alice ? max(currAns, ans) : min(currAns, ans);
+    }
+
+    return ans;
+}
+
+int sg3Mem(vector<int>& stones, int i, bool alice, vector<vector<int>> &dp) {
+    // Base Case
+    if (i >= stones.size()) return 0;
+
+    // DP Case
+    if (dp[i][alice] != -1) return dp[i][alice];
+
+    // Ek Case
+    int ans = alice ? INT_MIN : INT_MAX;
+    int total = 0;
+
+    // Try to pick 1, 2 and 3 stones every turn and use the best result possible forward for that player
+    for (int pick=1; pick<=3; pick++) {
+        if (i + pick - 1 >= stones.size()) break;               // Stone array out of bound
+        total += stones[i + pick - 1];                          // Add stone value in score
+        int currAns = sg3Mem(stones, i + pick, !alice, dp);         // Get recursion answer
+        // If alice is playing then add total stones in current answer and maximize it
+        // If bob is playing then subtract total stones from current answer and minimize it
+        currAns = alice ? currAns + total : currAns - total;
+        ans = alice ? max(currAns, ans) : min(currAns, ans);
+    }
+
+    return dp[i][alice] = ans;
+}
+
+int sg3Tab(vector<int>& stones) {
+    // Step 1: Create DP Array
+    vector<vector<int>> dp(stones.size() + 1, vector<int> (2, 0));
+    // Step 2: Add base case
+    // Step 3: Bottom up
+    for (int i=stones.size()-1; i>=0; i--) {
+        for (int alice=0; alice<2; alice++) {
+            
+            int ans = alice ? INT_MIN : INT_MAX;
+            int total = 0;
+
+            for (int pick=1; pick<=3; pick++) {
+                if (i + pick - 1 >= stones.size()) break;
+                total += stones[i + pick - 1];
+                int currAns = dp[i + pick][!alice];
+                currAns = alice ? currAns + total : currAns - total;
+                ans = alice ? max(currAns, ans) : min(currAns, ans);
+            }
+
+            dp[i][alice] = ans;   
+        }
+    }
+    return dp[0][true];
+
+}
+
+string stoneGameIII(vector<int>& stoneValue) {
+    // Recursion Solution
+    /*
+    int score = sg3Rec(stoneValue, 0, true);
+    */
+
+    // Memoization Solution
+    /*
+    vector<vector<int>> dp(stoneValue.size(), vector<int> (2, -1));
+    int score = sg3Mem(stoneValue, 0, true, dp);
+    */
+
+    // Tabulation Solution
+    int score = sg3Tab(stoneValue);
+
+    if (score > 0) return "Alice";
+    else if (score == 0) return "Tie";
+    else return "Bob";
+}
 
 
 
