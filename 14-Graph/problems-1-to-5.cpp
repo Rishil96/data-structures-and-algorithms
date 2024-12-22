@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <queue>
 using namespace std;
 
 
@@ -102,7 +103,69 @@ vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int co
 }
 
 
-// 4.
+// 4. Rotten Oranges
+int orangesRotting(vector<vector<int>>& grid) {
+    int time = 0;
+    int freshOranges = 0;
+    int rows = grid.size();
+    int cols = grid[0].size();
+    // Use BFS to rot oranges
+    queue<pair<int, pair<int, int>>> q;
+
+    // Step 1: Insert all rotten oranges
+    for (int i=0; i<rows; i++) {
+        for (int j=0; j<cols; j++) {
+            // Keep track of fresh oranges to save time later
+            if (grid[i][j] == 1) {
+                freshOranges++;
+            }
+            // Push rotten orange in queue
+            if (grid[i][j] == 2) {
+                q.push({0, {i, j}});
+            }
+        }
+    }
+
+    // Step 2: Use BFS to rot all oranges
+    while (!q.empty()) {
+        // Get front orange
+        auto frontItem = q.front(); q.pop();
+        int currTime = frontItem.first;
+        int currX = frontItem.second.first;
+        int currY = frontItem.second.second;
+
+        // Update time
+        time = max(currTime, time);
+
+        // Check if there are any fresh oranges in neighbouring cells and rot them
+        // Top
+        if (currX - 1 >= 0 && grid[currX-1][currY] == 1) {
+            freshOranges--;
+            grid[currX - 1][currY] = 2;
+            q.push({currTime + 1, {currX - 1, currY}});
+        }
+        // Right
+        if (currY + 1 < cols && grid[currX][currY+1] == 1) {
+            freshOranges--;
+            grid[currX][currY + 1] = 2;
+            q.push({currTime + 1, {currX, currY + 1}});
+        }
+        // Bottom
+        if (currX + 1 < rows && grid[currX+1][currY] == 1) {
+            freshOranges--;
+            grid[currX + 1][currY] = 2;
+            q.push({currTime + 1, {currX + 1, currY}});
+        }
+        // Left
+        if (currY - 1 >= 0 && grid[currX][currY-1] == 1) {
+            freshOranges--;
+            grid[currX][currY - 1] = 2;
+            q.push({currTime + 1, {currX, currY - 1}});
+        }
+    }
+
+    return freshOranges == 0 ? time : -1;
+}
 
 
 // 5.
