@@ -50,7 +50,50 @@ vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
 }
 
 
-// 7.
+// 7. Word Ladder
+int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+    // Step 1: Create a map of available words
+    unordered_map<string, bool> wordMap;
+    for (auto w: wordList) wordMap[w] = 1;
+
+    // Step 2: Check if end word is available in map
+    if (!wordMap[endWord]) return 0;
+
+    // Step 3: Use BFS to reach the end word from start word
+    queue<pair<string, int>> q;
+    q.push({beginWord, 1});
+    wordMap[beginWord] = 0;
+
+    while (!q.empty()) {
+        auto frontNode = q.front(); q.pop();
+        string currWord = frontNode.first;
+        int currTime = frontNode.second;
+
+        // Check if currword is endword
+        if (currWord == endWord) return currTime;
+
+        // Find a word that only has 1 different letter than currWord
+        for (int i=0; i<currWord.size(); i++) {
+            char currLetter = currWord[i];
+            // Loop through all letters
+            for (char letter='a'; letter<='z'; letter++) {
+                if (letter == currLetter) continue;
+                // Place new letter at current position and check if it exists in map
+                currWord[i] = letter;
+                // If new word exists in map, add it in queue
+                if (wordMap[currWord]) {
+                    q.push({currWord, currTime + 1});
+                    // Always scrap the word from map after it is used once to not fall into infinite loop
+                    wordMap[currWord] = 0;
+                }
+            }
+            // Backtrack to original current word
+            currWord[i] = currLetter;
+        }
+    }
+
+    return 0;
+}
 
 
 // 8.
