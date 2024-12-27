@@ -96,7 +96,53 @@ int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
 }
 
 
-// 8.
+// 8. Path with minimum effort
+int minimumEffortPath(vector<vector<int>>& heights) {
+    // Step 1: Create variables for traversal
+    int rows = heights.size();
+    int cols = heights[0].size();
+    vector<vector<int>> dist(rows, vector<int>(cols, INT_MAX));
+    priority_queue<pair<int, pair<int, int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> pq;
+
+    // Step 2: Insert starting point in heap/priority queue
+    pq.push({0, {0, 0}});
+    dist[0][0] = 0;
+
+    int dx[] = {-1, 0, 1, 0};
+    int dy[] = {0, 1, 0, -1};
+
+    // Step 3: Start Dijkstra's algorithm to calculate shortest distance
+    while (!pq.empty()) {
+        // Get node with shortest distance
+        auto topNode = pq.top(); pq.pop();
+        int topDist = topNode.first;
+        int X = topNode.second.first;
+        int Y = topNode.second.second;
+
+        // If we are on destination variable then return answer
+        if (X == rows - 1 && Y == cols - 1) return dist[X][Y];
+
+        // Go through all of its neighbours and insert them in queue
+        for (int i=0; i<4; i++) {
+            int newX = X + dx[i];
+            int newY = Y + dy[i];
+
+            // Calculate the absolute height difference between nodes
+            if (newX >= 0 && newY >= 0 && newX < rows && newY < cols) {
+                int currDiff = abs(heights[X][Y] - heights[newX][newY]);
+                int newMax = max(currDiff, topDist);
+            
+                // If current difference is smaller than what we have in distance array, then update it
+                if (newMax < dist[newX][newY]) {
+                    dist[newX][newY] = newMax;
+                    pq.push({newMax, {newX, newY}});
+                }
+            }
+        }
+    }
+
+    return dist[rows - 1][cols - 1];
+}
 
 
 // 9.
