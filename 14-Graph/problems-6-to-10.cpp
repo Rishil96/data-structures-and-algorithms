@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include <list>
 using namespace std;
 
 // 6. Course Schedule 2
@@ -145,7 +146,59 @@ int minimumEffortPath(vector<vector<int>>& heights) {
 }
 
 
-// 9.
+// 9. Critical Connections in a network
+void findBridges(int src, int parent, int &timer, vector<int>& tin, vector<int>& low, unordered_map<int, bool>& visited, vector<vector<int>>& ans, unordered_map<int, list<int>> &adjList) {
+    // Step 1: Update timer for source node
+    visited[src] = 1;
+    tin[src] = timer;
+    low[src] = timer;
+    timer++;
+
+    // Step 2: Visit neighbours of source
+    for (auto nbr: adjList[src]) {
+        // Ignore parent to go back to the node we came from
+        if (nbr == parent) continue;
+
+        // Visit neighbour if not visited
+        if (!visited[nbr]) {
+            findBridges(nbr, src, timer, tin, low, visited, ans, adjList);
+            // Update low of src if it can be visited faster via nbr
+            low[src] = min(low[src], low[nbr]);
+
+            // Bridge Condition
+            if (low[nbr] > tin[src]) {
+                ans.push_back({src, nbr});
+            }
+        }
+        // Else just update if src can be visited faster via nbr
+        else  {
+            low[src] = min(low[src], low[nbr]);
+        }
+    }
+}
+
+vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections) {
+    // Step 1: Create adjacency list
+    unordered_map<int, list<int>> adjList;
+
+    for (int i=0; i<connections.size(); i++) {
+        int u = connections[i][0];
+        int v = connections[i][1];
+        adjList[u].push_back(v);
+        adjList[v].push_back(u);
+    }
+
+    // Step 2: Create variables for algorithm
+    vector<vector<int>> ans;
+    int timer = 0;
+    vector<int> tin(n);
+    vector<int> low(n);
+    unordered_map<int, bool> vis;
+
+    // Step 3: Find bridges which are critical connection to keep the network together
+    findBridges(0, -1, timer, tin, low, vis, ans, adjList);
+    return ans;
+}
 
 
 // 10.
