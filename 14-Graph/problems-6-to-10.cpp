@@ -201,7 +201,47 @@ vector<vector<int>> criticalConnections(int n, vector<vector<int>>& connections)
 }
 
 
-// 10.
+// 10. Eventual Safe States
+bool cycleDetectionDFS(int src, vector<int> adj[], unordered_map<int, bool> &vis, unordered_map<int, bool>& dfsVis, int safeNodes[]) {
+    vis[src] = true;
+    dfsVis[src] = true;
+    safeNodes[src] = 0;
+    for (auto nbr : adj[src]) {
+        if (!vis[nbr]) {
+            bool recAns = cycleDetectionDFS(nbr, adj, vis, dfsVis, safeNodes);
+            if (recAns) return recAns;
+        }
+        else {
+            if (dfsVis[nbr]) return true;
+        }
+    }
+    
+    dfsVis[src] = false;
+    safeNodes[src] = 1;
+    return false;
+}
+
+vector<int> eventualSafeNodes(int V, vector<int> adj[]) {
+    // Observation: If a node leads to a cycle, then its definitely not a safe node
+    // Find nodes that are part of cycle to mark them as unsafe
+    // Step 1: Declare variables
+    vector<int> ans;
+    unordered_map<int, bool> vis;
+    unordered_map<int, bool> dfsVis;
+    int safeNodes[V] = {0};
+    
+    // Step 2: Visit all nodes
+    for (int node=0; node<V; node++) {
+        if (!vis[node]) cycleDetectionDFS(node, adj, vis, dfsVis, safeNodes);
+    }
+    
+    // Step 3: Store safe nodes in ans array
+    for (int src=0; src<V; src++) {
+        if (safeNodes[src]) ans.push_back(src);
+    }
+    
+    return ans;
+}
 
 
 
