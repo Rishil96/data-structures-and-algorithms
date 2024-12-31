@@ -65,7 +65,39 @@ vector<vector<string>> findSequences(string beginWord, string endWord, vector<st
 }
 
 
-// 12. 
+// 12. Minimum multiplications to reach end
+int minimumMultiplications(vector<int>& arr, int start, int end) {
+    /*
+    We use an array to build the answer where each index i is the element and its value
+    will be the number of operations required to reach i.
+    */
+    // Step 1: Initialize variables
+    int MOD = 100000;                   // MOD value
+    queue<int> q;                       // queue to perform BFS
+    vector<int> ans(100000, -1);        // Ans array to store minimum jumps to reach i
+    q.push(start);                      // 
+    ans[start] = 0;
+    
+    // Step 2: Use BFS and try to reach end node
+    while (!q.empty()) {
+        int frontNode = q.front(); q.pop();
+        if (frontNode == end) return ans[frontNode];
+        
+        // Loop through each arr element and perform operation on frontNode
+        for (auto num: arr) {
+            int newNode = (frontNode * num) % MOD;
+            // If no answer existed for newNode, write answer
+            // Answer is 1 operation more from what is required to reach frontNode
+            // as we performed the operation on frontNode to reach newNode
+            if (ans[newNode] == -1) {
+                ans[newNode] = 1 + ans[frontNode];
+                q.push(newNode);
+            }
+        }
+    }
+    
+    return -1;
+}
  
 
 // 13.
